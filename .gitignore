@@ -1,0 +1,44 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+.DS_Store
+
+# Expo
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig
+web-build/
+
+# Android
+/android/build/
+/android/app/build/
+/android/app/.cxx/
+/android/.idea/
+/android/app/debug/
+/android/app/release/
+/android/app/profile/
+
+# iOS
+/ios/build/
+/ios/Pods/
+/ios/.xcode.env.local
+/ios/DerivedData/
+/ios/fastlane/report.xml
+/ios/fastlane/Preview.html
+/ios/fastlane/screenshots
+/ios/fastlane/test_output
+
+# VSCode
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
