@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { Platform } from 'react-native';
 import { CartItem } from '../redux/cartSlice';
 
-const API_URL = 'http://localhost:8080/api';
+const API_URL = Platform.OS === 'android' ? 'http://172.20.9.246:8080/api' : 'http://localhost:8080/api';
 
 export const getMenuItems = () => {
   return axios.get(`${API_URL}/menu/all`);

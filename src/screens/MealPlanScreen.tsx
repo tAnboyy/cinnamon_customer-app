@@ -116,10 +116,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#fff',
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
+    color: '#000',
   },
   input: {
     height: 40,
@@ -128,6 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     paddingLeft: 8,
+    color: '#000',
   },
   itemContainer: {
     flexDirection: 'row',

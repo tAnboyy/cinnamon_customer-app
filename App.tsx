@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { registerRootComponent } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,6 +9,9 @@ import { View, Text } from 'react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebaseConfig';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
 
 import MenuScreen from './src/screens/MenuScreen';
 import CateringScreen from './src/screens/CateringScreen';
@@ -21,10 +25,23 @@ const Stack = createNativeStackNavigator();
 
 function Header() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={{ height: 56, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, backgroundColor: '#fff', elevation: 2 }}>
+    <View
+      style={{
+        paddingTop: insets.top,
+        height: 56 + insets.top,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        backgroundColor: '#fff',
+        elevation: 2,
+        borderBottomColor: '#eee',
+        borderBottomWidth: 1,
+      }}
+    >
       <Text style={{ fontSize: 18, fontWeight: '600', flex: 1 }}>Cinnamon Live</Text>
       <Text>🔔</Text>
       <View>
@@ -40,17 +57,49 @@ function Header() {
 }
 
 function MainTabs({ navigation }: any) {
+    // Get the bottom tab bar height to offset the floating cart
+    // Avoid overlap with the tab bar
+    const tabBarHeight = 56; // default fallback
     return (
       <>
         <Header />
-        <Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => {
+              let iconName: keyof typeof Ionicons.glyphMap = 'home';
+              switch (route.name) {
+                case 'Menu':
+                  iconName = 'restaurant-outline';
+                  break;
+                case 'Catering':
+                  iconName = 'call-outline';
+                  break;
+                case 'Meal Plans':
+                  iconName = 'calendar-outline';
+                  break;
+                case 'Past Orders':
+                  iconName = 'receipt-outline';
+                  break;
+                case 'Profile':
+                  iconName = 'person-circle-outline';
+                  break;
+              }
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            tabBarActiveTintColor: '#000',
+            tabBarInactiveTintColor: '#666',
+            tabBarStyle: { backgroundColor: '#fff' },
+            tabBarLabelStyle: { fontSize: 12 },
+          })}
+        >
           <Tab.Screen name="Menu" component={MenuScreen} />
           <Tab.Screen name="Catering" component={CateringScreen} />
           <Tab.Screen name="Meal Plans" component={PlaceholderScreen} />
           <Tab.Screen name="Past Orders" component={PlaceholderScreen} />
           <Tab.Screen name="Profile" component={PlaceholderScreen} />
         </Tab.Navigator>
-        <FloatingCartSummary onPress={() => navigation.navigate('Cart')} />
+        <FloatingCartSummary onPress={() => navigation.navigate('Cart')} extraBottom={tabBarHeight} />
       </>
     );
   }
@@ -67,11 +116,12 @@ function AppContent() {
 
   return (
     <NavigationContainer>
+      <StatusBar style="dark" backgroundColor="#ffffff" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
           <>
             <Stack.Screen name="Main" component={MainTabs} />
-            <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: true }} />
+            <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
           </>
         ) : (
           <Stack.Screen name="Auth" component={AuthScreen} />
@@ -81,12 +131,16 @@ function AppContent() {
   );
 }
 
-export default function App() {
+function App() {
   return (
     <StripeProvider publishableKey="pk_test_51KDgksSIsoMtySehtjFkFY6kxKB1gy0XTvFTt5zT89OZ6tRTo5nWnxlvgkJkEW8ZISNwkTaalRymEZgaBNk6iATX00gbuMjqGs">
         <Provider store={store}>
-            <AppContent />
+            <SafeAreaProvider>
+              <AppContent />
+            </SafeAreaProvider>
         </Provider>
     </StripeProvider>
   );
 }
+
+export default registerRootComponent(App);

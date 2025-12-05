@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { updateQuantity, removeFromCart } from '../redux/cartSlice';
 import { placeOrder } from '../services/api';
 import { Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const CartScreen = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
 
   const handleCheckout = () => {
     // In a real app, you'd get the userId from your auth state
@@ -30,14 +32,20 @@ const CartScreen = () => {
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.itemContainer}>
-      <Text>{item.name}</Text>
+      <Text style={{ color: '#000000ff' }}>{item.name}</Text>
       <Text>${item.price.toFixed(2)}</Text>
       <View style={styles.quantityContainer}>
-        <Button title="-" onPress={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))} />
-        <Text>{item.quantity}</Text>
-        <Button title="+" onPress={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))} />
+        <TouchableOpacity style={styles.qtyButton} onPress={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}>
+          <Text style={styles.qtyButtonText}>-</Text>
+        </TouchableOpacity>
+        <Text style={{ color: '#000000ff' }}>{item.quantity}</Text>
+        <TouchableOpacity style={styles.qtyButton} onPress={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}>
+          <Text style={styles.qtyButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
-      <Button title="Remove" onPress={() => dispatch(removeFromCart(item.id))} />
+      <TouchableOpacity onPress={() => dispatch(removeFromCart(item.id))}>
+        <Text style={{ color: '#d32f2f' }}>Remove</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -48,8 +56,18 @@ const CartScreen = () => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
         ListEmptyComponent={<Text>Your cart is empty.</Text>}
+        contentContainerStyle={{ paddingBottom: 96 }}
       />
-      <Button title="Checkout" onPress={handleCheckout} disabled={cartItems.length === 0} />
+      <View style={[styles.footer, { paddingBottom: Math.max(16, insets.bottom + 8) }]}>
+        <TouchableOpacity
+          style={[styles.checkoutButton, cartItems.length === 0 && { opacity: 0.5 }]}
+          onPress={handleCheckout}
+          disabled={cartItems.length === 0}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.checkoutText}>Checkout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -58,6 +76,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       padding: 16,
+      backgroundColor: '#fff',
     },
     itemContainer: {
       flexDirection: 'row',
@@ -68,6 +87,40 @@ const styles = StyleSheet.create({
     quantityContainer: {
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    qtyButton: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: '#f2f2f2',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginHorizontal: 8,
+    },
+    qtyButtonText: {
+      color: '#000',
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    footer: {
+      position: 'absolute',
+      left: 16,
+      right: 16,
+      bottom: 0,
+      backgroundColor: 'transparent',
+    },
+    checkoutButton: {
+      height: 48,
+      borderRadius: 8,
+      backgroundColor: '#ffd723ff',
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 2,
+    },
+    checkoutText: {
+      color: '#000',
+      fontSize: 16,
+      fontWeight: '500',
     },
   });
 

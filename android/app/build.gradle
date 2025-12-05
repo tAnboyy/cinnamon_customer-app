@@ -130,6 +130,14 @@ android {
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
+    buildFeatures {
+        prefab false
+    }
+    externalNativeBuild {
+        cmake {
+            version rootProject.ext.cmakeVersion
+        }
+    }
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`

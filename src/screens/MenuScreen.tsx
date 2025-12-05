@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator } from 'react-native';
-import { getMenuItems } from '../services/api';
+// import { getMenuItems } from '../services/api';
+import { menuItems as dummyMenuItems } from '../data/dummyData';
 import ItemCard from '../components/ItemCard';
 import { MenuItem } from '../types';
 
@@ -10,16 +11,9 @@ const MenuScreen = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getMenuItems()
-      .then(response => {
-        setItems(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // Using dummy data locally
+    setItems(dummyMenuItems);
+    setLoading(false);
   }, []);
 
   const filteredItems = items.filter(
@@ -48,9 +42,11 @@ const MenuScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.screenTitle}>Menu</Text>
       <TextInput
         style={styles.searchBar}
         placeholder="Search menu..."
+        placeholderTextColor="#666"
         value={search}
         onChangeText={setSearch}
       />
@@ -61,6 +57,7 @@ const MenuScreen = () => {
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
         keyExtractor={item => item.id}
+        contentContainerStyle={{ paddingBottom: 160 }}
       />
     </View>
   );
@@ -69,6 +66,14 @@ const MenuScreen = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: '#fff',
+    },
+    screenTitle: {
+      textAlign: 'center',
+      fontSize: 22,
+      fontWeight: '700',
+      color: '#000',
+      marginTop: 12,
     },
     searchBar: {
       height: 40,
@@ -77,6 +82,7 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       margin: 16,
       paddingLeft: 8,
+      color: '#000',
     },
     sectionHeader: {
         fontSize: 22,
@@ -84,6 +90,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f2f2f2',
         paddingVertical: 8,
         paddingHorizontal: 16,
+      color: '#000',
     }
   });
 
