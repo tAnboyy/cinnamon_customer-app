@@ -1,113 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList, ActivityIndicator } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback, useState } from 'react';
+import { View, Text, StyleSheet, SectionList, TouchableOpacity } from 'react-native';
+import { getWeeklyMealPlan } from '../services/api';
+import { useFocusEffect } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '../redux/cartSlice';
+import { updateQuantity } from '../redux/cartSlice';
 import { RootState } from '../redux/store';
-import { addToCart, updateQuantity, clearCart } from '../redux/cartSlice';
-import { MenuItem } from '../types';
-import { createMealPlan, getMenuItems } from '../services/api';
 
 const MealPlanScreen = () => {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [days, setDays] = useState('');
-  const [pickupTime, setPickupTime] = useState('');
-  const mealPlanItems = useSelector((state: RootState) => state.cart.items);
+  const [sections, setSections] = useState<Array<{ title: string; data: any[] }>>([]);
   const dispatch = useDispatch();
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        const response = await getMenuItems();
-        setMenuItems(response.data);
-      } catch (error) {
-        console.error("Failed to fetch menu items:", error);
-        Alert.alert("Error", "Could not load menu items.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      getWeeklyMealPlan()
+        .then((resp) => {
+          if (!active) return;
+          const data = resp.data || {};
+          const mapped = days.map((day) => {
+            const d = data[day] || {};
+            return {
+              title: day,
+              data: [d.veg, d.nonVeg].filter(Boolean),
+            };
+          });
+          setSections(mapped);
+        })
+        .catch((e) => {
+          console.error('Failed to load weekly meal plan', e);
+        });
 
-    fetchMenuItems();
-  }, []);
-
-  const handleCreatePlan = async () => {
-    if (!startDate || !days || !pickupTime || mealPlanItems.length === 0) {
-      Alert.alert('Error', 'Please fill in all required fields and add items to the plan.');
-      return;
-    }
-
-    const plan = {
-      // Hardcoding userId for now, replace with actual user ID from auth state
-      userId: 'testUser123', 
-      startDate,
-      endDate,
-      daysOfWeek: days.split(',').map(day => day.trim()),
-      pickupTime,
-      items: mealPlanItems,
-    };
-
-    try {
-      await createMealPlan(plan);
-      Alert.alert('Success', 'Meal plan created successfully!');
-      dispatch(clearCart());
-      setStartDate('');
-      setEndDate('');
-      setDays('');
-      setPickupTime('');
-    } catch (error) {
-      console.error('Error creating meal plan:', error);
-      Alert.alert('Error', 'Failed to create meal plan. Please try again.');
-    }
-  };
-
-  if (loading) {
-    return <ActivityIndicator size="large" style={styles.container} />;
-  }
+      return () => {
+        active = false;
+      };
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Start Date (YYYY-MM-DD)</Text>
-      <TextInput style={styles.input} value={startDate} onChangeText={setStartDate} />
-
-      <Text style={styles.label}>End Date (Optional)</Text>
-      <TextInput style={styles.input} value={endDate} onChangeText={setEndDate} />
-
-      <Text style={styles.label}>Days of the Week (e.g., Monday,Wednesday,Friday)</Text>
-      <TextInput style={styles.input} value={days} onChangeText={setDays} />
-
-      <Text style={styles.label}>Pickup Time (e.g., 12:00 PM)</Text>
-      <TextInput style={styles.input} value={pickupTime} onChangeText={setPickupTime} />
-
-      <Text style={styles.label}>Add Items to Meal Plan</Text>
-      <FlatList
-        data={menuItems}
-        renderItem={({ item }) => {
-          const planItem = mealPlanItems.find(i => i.id === item.id);
-          const quantity = planItem?.quantity || 0;
-
-          return (
-            <View style={styles.itemContainer}>
-              <Text>{item.name}</Text>
-              <View style={styles.quantityContainer}>
-                <Button title="-" onPress={() => dispatch(updateQuantity({ id: item.id, quantity: quantity - 1 }))} disabled={quantity === 0} />
-                <Text style={styles.quantityText}>{quantity}</Text>
-                <Button title="+" onPress={() => {
-                  if (planItem) {
-                    dispatch(updateQuantity({ id: item.id, quantity: quantity + 1 }));
-                  } else {
-                    dispatch(addToCart(item));
-                  }
-                }} />
-              </View>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item, index) => `${item.title}-${index}`}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.dayHeader}>{title}</Text>
+        )}
+        renderItem={({ item, section }) => (
+          <View style={styles.mealCard}>
+            <View style={styles.mealHeader}>
+              <Text style={styles.mealTitle}>{item.title}</Text>
+              <Text style={styles.mealPrice}>{item.priceLabel}</Text>
             </View>
-          )
-        }}
-        keyExtractor={item => item.id}
+            {(item.items as string[]).map((name: string, idx: number) => (
+              <Text key={`${item.title}-${idx}`} style={styles.mealItem}>• {name}</Text>
+            ))}
+            {(() => {
+              const day = section.title;
+              const mealType = item.title; // 'Veg Meal' or 'Non-Veg Meal'
+              const id = `meal-${day}-${mealType}`;
+              const priceMatch = String(item.priceLabel).match(/\$(\d+)/);
+              const price = priceMatch ? Number(priceMatch[1]) : 0;
+              const description = (item.items as string[]).join(', ');
+              const cartItems = useSelector((state: RootState) => state.cart.items);
+              const quantity = cartItems.find(i => i.id === id)?.quantity || 0;
+              if (quantity === 0) {
+                return (
+                  <TouchableOpacity style={styles.button} onPress={() => dispatch(addToCart({ id, name: `${mealType} (${day})`, price, description, category: 'Meal Plan', type: 'menu' }))}>
+                    <Text style={styles.buttonText}>Add to Cart</Text>
+                  </TouchableOpacity>
+                );
+              }
+              return (
+                <View style={styles.qtyControls}>
+                  <TouchableOpacity
+                    style={styles.qtyCircle}
+                    onPress={() => dispatch(updateQuantity({ id, quantity: quantity - 1 }))}
+                  >
+                    <Text style={styles.qtyCircleText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.qtyCount}>{quantity}</Text>
+                  <TouchableOpacity
+                    style={styles.qtyCircle}
+                    onPress={() => dispatch(updateQuantity({ id, quantity: quantity + 1 }))}
+                  >
+                    <Text style={styles.qtyCircleText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })()}
+          </View>
+        )}
+        contentContainerStyle={{ paddingBottom: 24, paddingTop: 8 }}
       />
-
-      <Button title="Create Meal Plan" onPress={handleCreatePlan} />
     </View>
   );
 };
@@ -115,36 +100,93 @@ const MealPlanScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
     backgroundColor: '#fff',
   },
-  label: {
-    fontSize: 16,
+  dayHeader: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#000',
+    marginTop: 16,
     marginBottom: 8,
-    color: '#000',
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+  mealCard: {
+    backgroundColor: '#f8f8f8',
     borderRadius: 8,
-    marginBottom: 16,
-    paddingLeft: 8,
-    color: '#000',
+    padding: 12,
+    marginBottom: 12,
   },
-  itemContainer: {
+  mealHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
-  quantityContainer: {
+  mealTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#000',
+  },
+  mealPrice: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+  },
+  mealItem: {
+    fontSize: 14,
+    color: '#000',
+    marginVertical: 2,
+  },
+  // Reuse styles consistent with ItemCard for add/qty controls
+  button: {
+    backgroundColor: '#FFC107',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  qtyControls: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
   },
-  quantityText: {
-    marginHorizontal: 10,
+  qtyCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#f2f2f2',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  qtyCircleText: {
+    color: '#000',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  qtyCount: {
+    minWidth: 24,
+    textAlign: 'center',
+    color: '#000',
     fontSize: 16,
+    fontWeight: '600',
+  },
+  addButton: {
+    marginTop: 10,
+    backgroundColor: '#000',
+    borderRadius: 6,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });
 

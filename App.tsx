@@ -19,6 +19,7 @@ import CartScreen from './src/screens/CartScreen';
 import PlaceholderScreen from './src/screens/PlaceholderScreen';
 import FloatingCartSummary from './src/components/FloatingCartSummary';
 import AuthScreen from './src/screens/AuthScreen';
+import MealPlanScreen from './src/screens/MealPlanScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -95,7 +96,7 @@ function MainTabs({ navigation }: any) {
         >
           <Tab.Screen name="Menu" component={MenuScreen} />
           <Tab.Screen name="Catering" component={CateringScreen} />
-          <Tab.Screen name="Meal Plans" component={PlaceholderScreen} />
+          <Tab.Screen name="Meal Plans" component={MealPlanScreen} />
           <Tab.Screen name="Past Orders" component={PlaceholderScreen} />
           <Tab.Screen name="Profile" component={PlaceholderScreen} />
         </Tab.Navigator>

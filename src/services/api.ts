@@ -19,3 +19,7 @@ export const createPaymentIntent = (amount: number) => {
 export const createMealPlan = (plan: { userId: string, startDate: string, endDate: string, daysOfWeek: string[], pickupTime: string, items: CartItem[] }) => {
     return axios.post(`${API_URL}/plans/create`, plan);
 }
+
+export const getWeeklyMealPlan = () => {
+    return axios.get(`${API_URL}/plans/weekly`);
+}
