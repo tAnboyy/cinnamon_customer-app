@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import { signInWithGoogle } from '../services/googleAuth';
 
 const AuthScreen = () => {
   const [email, setEmail] = useState('');
@@ -54,6 +55,18 @@ const AuthScreen = () => {
       />
       <Button title={isLogin ? 'Login' : 'Sign Up'} onPress={handleAuth} />
       <Button title={`Switch to ${isLogin ? 'Sign Up' : 'Login'}`} onPress={() => setIsLogin(!isLogin)} />
+      <View style={{ height: 16 }} />
+      <Button
+        title="Continue with Google"
+        onPress={async () => {
+          try {
+            const res = await signInWithGoogle();
+            Alert.alert('Logged in!', `Welcome ${res.email ?? res.userId}`);
+          } catch (err: any) {
+            Alert.alert('Google Sign-In Error', err?.message ?? 'Unknown error');
+          }
+        }}
+      />
     </View>
   );
 };

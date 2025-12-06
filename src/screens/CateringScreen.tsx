@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
 import { Linking } from 'react-native';
 // import { getMenuItems } from '../services/api';
 import { menuItems as dummyMenuItems } from '../data/dummyData';
@@ -10,6 +10,8 @@ const CateringScreen = () => {
     const [search, setSearch] = useState('');
     const [items, setItems] = useState<MenuItem[]>([]);
     const [loading, setLoading] = useState(true);
+  const [showCallModal, setShowCallModal] = useState(false);
+  const phoneNumbers = ['9842429243', '9812345678', '9801122334'];
 
     useEffect(() => {
         // Use same menu items for Catering view (no add to cart)
@@ -48,12 +50,57 @@ const CateringScreen = () => {
         </View>
         <TouchableOpacity
           style={[styles.callContainer, { marginHorizontal: 16, marginTop: 8 }]}
-          onPress={() => Linking.openURL('tel:9842429243')}
+          onPress={() => setShowCallModal(true)}
           activeOpacity={0.8}
         >
           <Text style={styles.callIcon}>📞</Text>
           <Text style={styles.callText}>Call to place Catering orders</Text>
         </TouchableOpacity>
+        <Modal
+          visible={showCallModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowCallModal(false)}
+        >
+          <View style={styles.modalBackdrop}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalTitle}>Select a number to call</Text>
+              <View style={{ marginTop: 8 }}>
+                {phoneNumbers.map(num => (
+                  <TouchableOpacity
+                    key={num}
+                    style={styles.numRow}
+                    activeOpacity={0.8}
+                    onPress={async () => {
+                      const url = `tel://${num}`;
+                      try {
+                        const supported = await Linking.canOpenURL(url);
+                        if (supported) {
+                          setShowCallModal(false);
+                          await Linking.openURL(url);
+                        } else {
+                          console.warn('Phone calls not supported on this device/emulator');
+                        }
+                      } catch (e) {
+                        console.error('Failed to initiate call', e);
+                      }
+                    }}
+                  >
+                    <Text style={styles.numText}>{num}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={[styles.modalBtn, { backgroundColor: '#f2f2f2' }]}
+                  onPress={() => setShowCallModal(false)}
+                >
+                  <Text style={[styles.modalBtnText, { color: '#000' }]}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <TextInput
           style={styles.searchBar}
           placeholder="Search catering..."
@@ -78,6 +125,48 @@ const CateringScreen = () => {
       container: {
         flex: 1,
         backgroundColor: '#fff',
+      },
+      modalBackdrop: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 24,
+      },
+      modalCard: {
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 16,
+      },
+      modalTitle: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: '700',
+      },
+      modalActions: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 12,
+        marginTop: 12,
+      },
+      modalBtn: {
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+        borderRadius: 8,
+      },
+      modalBtnText: {
+        fontWeight: '700',
+      },
+      numRow: {
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+      },
+      numText: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: '600',
       },
       headerRow: {
         flexDirection: 'row',

@@ -1,14 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Modal, Platform } from 'react-native';
+import { useStripe } from '@stripe/stripe-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 // Using lightweight custom pickers to avoid extra dependencies
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { updateQuantity, removeFromCart, clearCart } from '../redux/cartSlice';
-import { placeOrder, createPaymentIntent } from '../services/api';
+import { placeOrder, createPaymentIntent, getPaymentSheetParams } from '../services/api';
 import { Alert } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CartScreen = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -39,6 +41,8 @@ const CartScreen = () => {
   const [notes, setNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'cash'>('cash');
   const [confirmCashModal, setConfirmCashModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const totalAmount = useMemo(() => cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0), [cartItems]);
 
   const submitOrder = async (paymentIntentId?: string) => {
@@ -78,15 +82,48 @@ const CartScreen = () => {
     }
     if (paymentMethod === 'online') {
       try {
+        setIsProcessing(true);
         const amountCents = Math.round(totalAmount * 100);
-        const resp = await createPaymentIntent(amountCents);
-        const piId = resp.data?.id || resp.data?.paymentIntentId;
-        // Here you would redirect to Stripe payment flow.
-        // For now, assume success and submit order with payment intent.
-        await submitOrder(piId);
+        // Try to reuse an existing customerId if available
+        let customerId = await AsyncStorage.getItem('stripe_customer_id');
+        const sheetResp = await getPaymentSheetParams(amountCents);
+        const { paymentIntent, ephemeralKey, customer } = sheetResp.data;
+        // Persist customerId for reuse
+        if (customer && customer !== customerId) {
+          await AsyncStorage.setItem('stripe_customer_id', customer);
+          customerId = customer;
+        }
+
+        const init = await initPaymentSheet({
+          merchantDisplayName: 'Cinnamon Live',
+          customerId: customerId || customer,
+          customerEphemeralKeySecret: ephemeralKey,
+          paymentIntentClientSecret: paymentIntent,
+          allowsDelayedPaymentMethods: true,
+        });
+        if (init.error) {
+          console.error(init.error);
+          Alert.alert('Payment Error', init.error.message || 'Failed to init payment sheet.');
+          setIsProcessing(false);
+          return;
+        }
+
+        const present = await presentPaymentSheet();
+        if (present.error) {
+          console.error(present.error);
+          Alert.alert('Payment Error', present.error.message || 'Payment canceled.');
+        } else {
+          // Payment succeeded, navigate to confirmation and submit order
+          try {
+            navigation.navigate('PaymentConfirmation', { amount: totalAmount, pickupDate, pickupTime });
+          } catch {}
+          await submitOrder();
+        }
       } catch (e) {
         console.error(e);
         Alert.alert('Payment Error', 'Failed to initiate online payment.');
+      } finally {
+        setIsProcessing(false);
       }
     } else {
       setConfirmCashModal(true);
@@ -126,7 +163,7 @@ const CartScreen = () => {
         <Text style={styles.formLabel}>Pickup Date</Text>
         <TouchableOpacity
           style={[styles.input, styles.inputButton]}
-          onPress={() => setShowDatePicker(true)}
+          onPress={() => setShowDatePicker(prev => !prev)}
           activeOpacity={0.8}
         >
           <Text style={styles.inputButtonText}>{pickupDate || 'Select date'}</Text>
@@ -136,13 +173,35 @@ const CartScreen = () => {
             value={dateValue}
             mode="date"
             display={Platform.OS === 'ios' ? 'inline' : 'default'}
+            minimumDate={new Date()}
             onChange={(event: any, selectedDate?: Date) => {
-              setShowDatePicker(Platform.OS === 'ios');
+              // Auto-close picker after selection on iOS; close immediately on Android as well
+              if (Platform.OS === 'ios') setShowDatePicker(false);
+              if (Platform.OS === 'android') setShowDatePicker(false);
               if (selectedDate) {
+                // Prevent past dates (minimumDate already set, but guard as well)
+                const today = new Date();
+                const sel = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+                const min = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                if (sel < min) {
+                  return; // ignore past date
+                }
                 setDateValue(selectedDate);
                 setPickupDate(formatDate(selectedDate));
+                // If previously selected time is now invalid (past when date is today), clear it
+                if (pickupTime) {
+                  const [hh, mm] = pickupTime.split(':').map(n => parseInt(n, 10));
+                  const selectedTimeDate = new Date(selectedDate);
+                  selectedTimeDate.setHours(hh, mm, 0, 0);
+                  const now = new Date();
+                  const sameDay = sel.getTime() === min.getTime();
+                  if (sameDay && selectedTimeDate < now) {
+                    // Clear invalid past time
+                    setPickupTime('');
+                  }
+                }
               }
-              if (Platform.OS === 'android') setShowDatePicker(false);
+              // iOS date picker closes automatically after selection
             }}
           />
         )}
@@ -150,7 +209,7 @@ const CartScreen = () => {
         <Text style={styles.formLabel}>Pickup Time</Text>
         <TouchableOpacity
           style={[styles.input, styles.inputButton]}
-          onPress={() => setShowTimePicker(true)}
+          onPress={() => setShowTimePicker(prev => !prev)}
           activeOpacity={0.8}
         >
           <Text style={styles.inputButtonText}>{pickupTime || 'Select time'}</Text>
@@ -161,12 +220,33 @@ const CartScreen = () => {
             mode="time"
             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={(event: any, selectedTime?: Date) => {
-              setShowTimePicker(Platform.OS === 'ios');
+              if (Platform.OS === 'android') setShowTimePicker(false);
               if (selectedTime) {
+                // Validate not selecting past time when pickup date is today
+                const now = new Date();
+                let selectedDateForTime: Date;
+                if (pickupDate) {
+                  const [y, m, d] = pickupDate.split('-').map(n => parseInt(n, 10));
+                  selectedDateForTime = new Date(y, (m - 1), d);
+                } else {
+                  // If date not chosen yet, assume today for validation
+                  selectedDateForTime = new Date();
+                  setPickupDate(formatDate(selectedDateForTime));
+                }
+                const minDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const selDateOnly = new Date(selectedDateForTime.getFullYear(), selectedDateForTime.getMonth(), selectedDateForTime.getDate());
+                const candidate = new Date(selectedDateForTime);
+                candidate.setHours(selectedTime.getHours(), selectedTime.getMinutes(), 0, 0);
+
+                const isSameDay = selDateOnly.getTime() === minDate.getTime();
+                if (isSameDay && candidate < now) {
+                  // Ignore past time selection
+                  return;
+                }
                 setTimeValue(selectedTime);
                 setPickupTime(formatTime(selectedTime));
               }
-              if (Platform.OS === 'android') setShowTimePicker(false);
+              // On iOS, keep picker visible until user toggles the field again
             }}
           />
         )}
@@ -203,16 +283,17 @@ const CartScreen = () => {
             <Text style={styles.paymentText}>Online</Text>
           </TouchableOpacity>
         </View>
+        {/* PaymentSheet does not need inline CardField */}
         <Text style={styles.totalText}>Total: ${totalAmount.toFixed(2)}</Text>
       </View>
       <View style={[styles.footer, { paddingBottom: Math.max(16, insets.bottom + 8) }]}>
         <TouchableOpacity
-          style={[styles.checkoutButton, cartItems.length === 0 && { opacity: 0.5 }]}
+          style={[styles.checkoutButton, (cartItems.length === 0 || isProcessing) && { opacity: 0.5 }]}
           onPress={handleCheckout}
-          disabled={cartItems.length === 0}
+          disabled={cartItems.length === 0 || isProcessing}
           activeOpacity={0.8}
         >
-          <Text style={styles.checkoutText}>Checkout</Text>
+          <Text style={styles.checkoutText}>{isProcessing ? 'Processing…' : 'Checkout'}</Text>
         </TouchableOpacity>
       </View>
       <Modal visible={confirmCashModal} transparent animationType="fade" onRequestClose={() => setConfirmCashModal(false)}>

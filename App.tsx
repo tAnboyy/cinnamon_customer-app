@@ -17,9 +17,11 @@ import MenuScreen from './src/screens/MenuScreen';
 import CateringScreen from './src/screens/CateringScreen';
 import CartScreen from './src/screens/CartScreen';
 import PlaceholderScreen from './src/screens/PlaceholderScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 import FloatingCartSummary from './src/components/FloatingCartSummary';
 import AuthScreen from './src/screens/AuthScreen';
 import MealPlanScreen from './src/screens/MealPlanScreen';
+import PaymentConfirmationScreen from './src/screens/PaymentConfirmationScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -98,7 +100,7 @@ function MainTabs({ navigation }: any) {
           <Tab.Screen name="Catering" component={CateringScreen} />
           <Tab.Screen name="Meal Plans" component={MealPlanScreen} />
           <Tab.Screen name="Past Orders" component={PlaceholderScreen} />
-          <Tab.Screen name="Profile" component={PlaceholderScreen} />
+          <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
         <FloatingCartSummary onPress={() => navigation.navigate('Cart')} extraBottom={tabBarHeight} />
       </>
@@ -123,6 +125,7 @@ function AppContent() {
           <>
             <Stack.Screen name="Main" component={MainTabs} />
             <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="PaymentConfirmation" component={PaymentConfirmationScreen} />
           </>
         ) : (
           <Stack.Screen name="Auth" component={AuthScreen} />

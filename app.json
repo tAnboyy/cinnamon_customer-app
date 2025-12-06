@@ -1,5 +1,15 @@
 {
+  "expo": {
+    "scheme": "cinnamoncustomer",
+    "extra": {
+      "expoPublicGoogleWebClientId": "${EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID}",
+      "expoPublicGoogleIosClientId": "${EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID}"
+    }
+  },
   "android": {
     "package": "com.anonymous.cinnamoncustomer"
+  },
+  "ios": {
+    "bundleIdentifier": "com.anonymous.cinnamoncustomer"
   }
 }

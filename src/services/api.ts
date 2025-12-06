@@ -16,6 +16,10 @@ export const createPaymentIntent = (amount: number) => {
     return axios.post(`${API_URL}/payments/create-payment-intent`, { amount });
 }
 
+export const getPaymentSheetParams = (amount: number) => {
+    return axios.post(`${API_URL}/payments/payment-sheet`, { amount });
+}
+
 export const createMealPlan = (plan: { userId: string, startDate: string, endDate: string, daysOfWeek: string[], pickupTime: string, items: CartItem[] }) => {
     return axios.post(`${API_URL}/plans/create`, plan);
 }
