@@ -11,6 +11,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebaseConfig';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Ionicons } from '@expo/vector-icons';
 
 import MenuScreen from './src/screens/MenuScreen';
@@ -111,6 +112,11 @@ function AppContent() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    // Configure Google Sign-In once at app startup
+    GoogleSignin.configure({
+      webClientId: '919849328876-05jlgu8kj4jn29jbgk89e804nn2nqig3.apps.googleusercontent.com',
+    });
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
