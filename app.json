@@ -1,22 +1,46 @@
 {
   "expo": {
-    "scheme": "cinnamoncustomer",
+    "name": "Cinnamon",
+    "scheme": "cinnamon",
+    "slug": "cinnamon",
     "plugins": [
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "enableGooglePay": true,
+          "publishableKey": "pk_test_51SgYBZSFi2GeyF3cBzykSmU9mNvggPy72eL5dq5xgAJ6rig7wSNF6oOgJX2V1uz9nBLpgs8uDS8CIPW4NCU26767006xwB1d1F"
+        }
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "android": {
-      "package": "com.anonymous.cinnamoncustomer",
-      "googleServicesFile": "./google-services.json"
-
+      "package": "com.anonymous.cinnamon",
+      "googleServicesFile": "./google-services.json",
+      "statusBar": {
+        "backgroundColor": "#ffffff",
+        "barStyle": "dark-content",
+        "translucent": false
+      }
     },
     "ios": {
-      "bundleIdentifier": "com.anonymous.cinnamoncustomer",
-      "googleServicesFile": "./GoogleService-Info.plist"
-
+      "bundleIdentifier": "com.anonymous.cinnamon",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "statusBar": {
+        "barStyle": "dark"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "output": "static"
     },
     "extra": {
       "expoPublicGoogleWebClientId": "${EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID}",
-      "expoPublicGoogleIosClientId": "${EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID}"
-    }
+      "expoPublicGoogleIosClientId": "${EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID}",
+      "eas": {
+        "projectId": "7f0e199c-2420-4dfc-bb87-9ef6d5121386"
+      }
+    },
+    "owner": "cinnamon-org"
   }
 }

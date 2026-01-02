@@ -1,4 +1,4 @@
-package com.anonymous.cinnamoncustomer
+package com.anonymous.cinnamon
 
 import android.os.Build
 import android.os.Bundle

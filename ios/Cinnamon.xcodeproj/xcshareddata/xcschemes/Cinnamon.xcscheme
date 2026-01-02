@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "cinnamoncustomer.app"
-               BlueprintName = "cinnamoncustomer"
-               ReferencedContainer = "container:cinnamoncustomer.xcodeproj">
+               BuildableName = "Cinnamon.app"
+               BlueprintName = "Cinnamon"
+               ReferencedContainer = "container:Cinnamon.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "cinnamoncustomerTests.xctest"
-               BlueprintName = "cinnamoncustomerTests"
-               ReferencedContainer = "container:cinnamoncustomer.xcodeproj">
+               BuildableName = "CinnamonTests.xctest"
+               BlueprintName = "CinnamonTests"
+               ReferencedContainer = "container:Cinnamon.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "cinnamoncustomer.app"
-            BlueprintName = "cinnamoncustomer"
-            ReferencedContainer = "container:cinnamoncustomer.xcodeproj">
+            BuildableName = "Cinnamon.app"
+            BlueprintName = "Cinnamon"
+            ReferencedContainer = "container:Cinnamon.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "cinnamoncustomer.app"
-            BlueprintName = "cinnamoncustomer"
-            ReferencedContainer = "container:cinnamoncustomer.xcodeproj">
+            BuildableName = "Cinnamon.app"
+            BlueprintName = "Cinnamon"
+            ReferencedContainer = "container:Cinnamon.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -40,14 +40,19 @@ const MealPlanScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.screenTitle}>Weekly Meal Plans</Text>
+      </View>
       <SectionList
         sections={sections}
         keyExtractor={(item, index) => `${item.title}-${index}`}
         renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.dayHeader}>{title}</Text>
+          <View style={styles.sectionHeaderContainer}>
+            <Text style={styles.sectionHeader}>{title}</Text>
+          </View>
         )}
-        renderItem={({ item, section }) => (
-          <View style={styles.mealCard}>
+        renderItem={({ item, index, section }) => (
+          <View style={[styles.mealCard, index === 0 && styles.firstMealCard]}>
             <View style={styles.mealHeader}>
               <Text style={styles.mealTitle}>{item.title}</Text>
               <Text style={styles.mealPrice}>{item.priceLabel}</Text>
@@ -92,6 +97,7 @@ const MealPlanScreen = () => {
           </View>
         )}
         contentContainerStyle={{ paddingBottom: 24, paddingTop: 8 }}
+        stickySectionHeadersEnabled={true}
       />
     </View>
   );
@@ -100,8 +106,43 @@ const MealPlanScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
     backgroundColor: '#fff',
+  },
+  header: {
+    backgroundColor: '#fff',
+    paddingBottom: 8,
+  },
+  screenTitle: {
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#000',
+    marginTop: 12,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#000',
+    marginTop: 12,
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    paddingVertical: 12,
+  },
+  sectionHeaderContainer: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    backgroundColor: '#f8f8f8',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    color: '#000',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
   },
   dayHeader: {
     fontSize: 20,
@@ -109,60 +150,79 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 16,
     marginBottom: 8,
+    paddingHorizontal: 20,
   },
   mealCard: {
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 12,
+    marginHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  firstMealCard: {
+    marginTop: 12,
   },
   mealHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   mealTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
     color: '#000',
   },
   mealPrice: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '700',
     color: '#000',
   },
   mealItem: {
     fontSize: 14,
-    color: '#000',
-    marginVertical: 2,
+    color: '#444',
+    marginVertical: 3,
+    lineHeight: 20,
   },
-  // Reuse styles consistent with ItemCard for add/qty controls
   button: {
-    backgroundColor: '#FFC107',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
+    backgroundColor: '#000',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 10,
     alignSelf: 'flex-start',
-    marginTop: 10,
+    marginTop: 12,
+    minWidth: 120,
+    alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 14,
   },
   qtyControls: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    padding: 4,
     gap: 8,
-    marginTop: 10,
+    marginTop: 12,
+    alignSelf: 'flex-start',
   },
   qtyCircle: {
     width: 32,
     height: 32,
-    borderRadius: 16,
-    backgroundColor: '#f2f2f2',
+    borderRadius: 8,
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   qtyCircleText: {
     color: '#000',

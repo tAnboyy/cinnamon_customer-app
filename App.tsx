@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { registerRootComponent } from 'expo';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider, useSelector } from 'react-redux';
 import { store, RootState } from './src/redux/store';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebaseConfig';
@@ -18,11 +18,14 @@ import MenuScreen from './src/screens/MenuScreen';
 import CateringScreen from './src/screens/CateringScreen';
 import CartScreen from './src/screens/CartScreen';
 import PlaceholderScreen from './src/screens/PlaceholderScreen';
+import PastOrdersScreen from './src/screens/PastOrdersScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import FloatingCartSummary from './src/components/FloatingCartSummary';
 import AuthScreen from './src/screens/AuthScreen';
 import MealPlanScreen from './src/screens/MealPlanScreen';
 import PaymentConfirmationScreen from './src/screens/PaymentConfirmationScreen';
+
+import ExpoStripeProvider from 'src/components/stripe-provider';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -31,6 +34,7 @@ function Header() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
 
   return (
     <View
@@ -48,14 +52,14 @@ function Header() {
     >
       <Text style={{ fontSize: 18, fontWeight: '600', flex: 1 }}>Cinnamon Live</Text>
       <Text>🔔</Text>
-      <View>
-        <Text style={{ marginLeft: 12 }}>🛒</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={{ marginLeft: 12 }} accessibilityRole="button" accessibilityLabel="Open cart">
+        <Text>🛒</Text>
         {totalItems > 0 && (
           <View style={{ position: 'absolute', right: -8, top: -8, backgroundColor: 'red', borderRadius: 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: 'white', fontSize: 12 }}>{totalItems}</Text>
           </View>
         )}
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -100,7 +104,7 @@ function MainTabs({ navigation }: any) {
           <Tab.Screen name="Menu" component={MenuScreen} />
           <Tab.Screen name="Catering" component={CateringScreen} />
           <Tab.Screen name="Meal Plans" component={MealPlanScreen} />
-          <Tab.Screen name="Past Orders" component={PlaceholderScreen} />
+          <Tab.Screen name="Past Orders" component={PastOrdersScreen} />
           <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
         <FloatingCartSummary onPress={() => navigation.navigate('Cart')} extraBottom={tabBarHeight} />
@@ -143,13 +147,13 @@ function AppContent() {
 
 function App() {
   return (
-    <StripeProvider publishableKey="pk_test_51KDgksSIsoMtySehtjFkFY6kxKB1gy0XTvFTt5zT89OZ6tRTo5nWnxlvgkJkEW8ZISNwkTaalRymEZgaBNk6iATX00gbuMjqGs">
+    <ExpoStripeProvider>
         <Provider store={store}>
             <SafeAreaProvider>
               <AppContent />
             </SafeAreaProvider>
         </Provider>
-    </StripeProvider>
+    </ExpoStripeProvider>
   );
 }
 

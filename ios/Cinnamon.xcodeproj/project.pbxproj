@@ -7,31 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0555C8404AF606DBD5A19127 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 56E6CF0AC08C4E4372098D7D /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		227D819687DC40C39B788971 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB5123F3DF964E5B9393F237 /* GoogleService-Info.plist */; };
+		265F5A8443829B55B9B21C4F /* libPods-Cinnamon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 796364334155F96C2B4A4FC6 /* libPods-Cinnamon.a */; };
+		3787F73B58EA4B5CB9CDEA85 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C09771D72DD472D9E4D5ED6 /* noop-file.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		62C5E1D819EF528179B7A6E6 /* libPods-cinnamoncustomer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06984BA6778069A22F6C0671 /* libPods-cinnamoncustomer.a */; };
+		561E2259CD3CEDCBF6E1CF5C /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82ECB79A4549E4E4F571FFF6 /* ExpoModulesProvider.swift */; };
+		978E13904D964DBBAAA00479 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 112D985B2D09495D86815CA2 /* GoogleService-Info.plist */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C35401A7E3A5AFF23848B84A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9E15A3F6231C1DA1E05DBFE0 /* PrivacyInfo.xcprivacy */; };
-		C54F33BCED75D2F24B6B6970 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67489D564BAB64F43BC38BAE /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		06984BA6778069A22F6C0671 /* libPods-cinnamoncustomer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cinnamoncustomer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* cinnamoncustomer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cinnamoncustomer.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = cinnamoncustomer/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = cinnamoncustomer/Info.plist; sourceTree = "<group>"; };
-		203D0D96BDB54A650258BEFE /* Pods-cinnamoncustomer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cinnamoncustomer.release.xcconfig"; path = "Target Support Files/Pods-cinnamoncustomer/Pods-cinnamoncustomer.release.xcconfig"; sourceTree = "<group>"; };
-		67489D564BAB64F43BC38BAE /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-cinnamoncustomer/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		8DFB3DA7CED44AFF23F3E532 /* Pods-cinnamoncustomer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cinnamoncustomer.debug.xcconfig"; path = "Target Support Files/Pods-cinnamoncustomer/Pods-cinnamoncustomer.debug.xcconfig"; sourceTree = "<group>"; };
-		9E15A3F6231C1DA1E05DBFE0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = cinnamoncustomer/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = cinnamoncustomer/SplashScreen.storyboard; sourceTree = "<group>"; };
+		112D985B2D09495D86815CA2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Cinnamon/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* Cinnamon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cinnamon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Cinnamon/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Cinnamon/Info.plist; sourceTree = "<group>"; };
+		56E6CF0AC08C4E4372098D7D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Cinnamon/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		796364334155F96C2B4A4FC6 /* libPods-Cinnamon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Cinnamon.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		82ECB79A4549E4E4F571FFF6 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Cinnamon/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		92AE3C041C8E714062207B40 /* Pods-Cinnamon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cinnamon.debug.xcconfig"; path = "Target Support Files/Pods-Cinnamon/Pods-Cinnamon.debug.xcconfig"; sourceTree = "<group>"; };
+		9C09771D72DD472D9E4D5ED6 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "Cinnamon/noop-file.swift"; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Cinnamon/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		EAAE9EE4A4E282A2FCE422C6 /* Pods-Cinnamon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cinnamon.release.xcconfig"; path = "Target Support Files/Pods-Cinnamon/Pods-Cinnamon.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = cinnamoncustomer/AppDelegate.swift; sourceTree = "<group>"; };
-		F11748442D0722820044C1D9 /* cinnamoncustomer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "cinnamoncustomer-Bridging-Header.h"; path = "cinnamoncustomer/cinnamoncustomer-Bridging-Header.h"; sourceTree = "<group>"; };
-		FB5123F3DF964E5B9393F237 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "cinnamoncustomer/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Cinnamon/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* Cinnamon-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Cinnamon-Bridging-Header.h"; path = "Cinnamon/Cinnamon-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,41 +41,34 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				62C5E1D819EF528179B7A6E6 /* libPods-cinnamoncustomer.a in Frameworks */,
+				265F5A8443829B55B9B21C4F /* libPods-Cinnamon.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* cinnamoncustomer */ = {
+		13B07FAE1A68108700A75B9A /* Cinnamon */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
-				F11748442D0722820044C1D9 /* cinnamoncustomer-Bridging-Header.h */,
+				F11748442D0722820044C1D9 /* Cinnamon-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				FB5123F3DF964E5B9393F237 /* GoogleService-Info.plist */,
-				9E15A3F6231C1DA1E05DBFE0 /* PrivacyInfo.xcprivacy */,
+				112D985B2D09495D86815CA2 /* GoogleService-Info.plist */,
+				56E6CF0AC08C4E4372098D7D /* PrivacyInfo.xcprivacy */,
+				9C09771D72DD472D9E4D5ED6 /* noop-file.swift */,
 			);
-			name = cinnamoncustomer;
-			sourceTree = "<group>";
-		};
-		2976069497F95CF38BAA81D1 /* cinnamoncustomer */ = {
-			isa = PBXGroup;
-			children = (
-				67489D564BAB64F43BC38BAE /* ExpoModulesProvider.swift */,
-			);
-			name = cinnamoncustomer;
+			name = Cinnamon;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				06984BA6778069A22F6C0671 /* libPods-cinnamoncustomer.a */,
+				796364334155F96C2B4A4FC6 /* libPods-Cinnamon.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -88,12 +83,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* cinnamoncustomer */,
+				13B07FAE1A68108700A75B9A /* Cinnamon */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				B59A5A60A9571A058870AD61 /* Pods */,
-				FD3C241E20949F202B7C4A9D /* ExpoModulesProviders */,
+				A2E808A828E1D29178AD6044 /* Pods */,
+				EDD8197E4C204869C8B0D539 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -103,18 +98,17 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* cinnamoncustomer.app */,
+				13B07F961A680F5B00A75B9A /* Cinnamon.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B59A5A60A9571A058870AD61 /* Pods */ = {
+		A2E808A828E1D29178AD6044 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8DFB3DA7CED44AFF23F3E532 /* Pods-cinnamoncustomer.debug.xcconfig */,
-				203D0D96BDB54A650258BEFE /* Pods-cinnamoncustomer.release.xcconfig */,
+				92AE3C041C8E714062207B40 /* Pods-Cinnamon.debug.xcconfig */,
+				EAAE9EE4A4E282A2FCE422C6 /* Pods-Cinnamon.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -124,40 +118,48 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = cinnamoncustomer/Supporting;
+			path = Cinnamon/Supporting;
 			sourceTree = "<group>";
 		};
-		FD3C241E20949F202B7C4A9D /* ExpoModulesProviders */ = {
+		EDD8197E4C204869C8B0D539 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				2976069497F95CF38BAA81D1 /* cinnamoncustomer */,
+				F2FDB1D22EF40C59CBD840D9 /* Cinnamon */,
 			);
 			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		F2FDB1D22EF40C59CBD840D9 /* Cinnamon */ = {
+			isa = PBXGroup;
+			children = (
+				82ECB79A4549E4E4F571FFF6 /* ExpoModulesProvider.swift */,
+			);
+			name = Cinnamon;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* cinnamoncustomer */ = {
+		13B07F861A680F5B00A75B9A /* Cinnamon */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "cinnamoncustomer" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Cinnamon" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				CA9296DF62D2CE363862547D /* [Expo] Configure project */,
+				5EE7D47D631107AFB755ED9A /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				E3DBC085335B8E83FA2678BB /* [CP] Embed Pods Frameworks */,
+				D8AA94B86CF98EC401B60A09 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = cinnamoncustomer;
-			productName = cinnamoncustomer;
-			productReference = 13B07F961A680F5B00A75B9A /* cinnamoncustomer.app */;
+			name = Cinnamon;
+			productName = Cinnamon;
+			productReference = 13B07F961A680F5B00A75B9A /* Cinnamon.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -173,7 +175,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "cinnamoncustomer" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Cinnamon" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -186,7 +188,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* cinnamoncustomer */,
+				13B07F861A680F5B00A75B9A /* Cinnamon */,
 			);
 		};
 /* End PBXProject section */
@@ -199,8 +201,8 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				227D819687DC40C39B788971 /* GoogleService-Info.plist in Resources */,
-				C35401A7E3A5AFF23848B84A /* PrivacyInfo.xcprivacy in Resources */,
+				978E13904D964DBBAAA00479 /* GoogleService-Info.plist in Resources */,
+				0555C8404AF606DBD5A19127 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,12 +241,36 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-cinnamoncustomer-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Cinnamon-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		5EE7D47D631107AFB755ED9A /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/Cinnamon/Cinnamon.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-Cinnamon/expo-configure-project.sh",
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Pods/Target Support Files/Pods-Cinnamon/ExpoModulesProvider.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Cinnamon/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -252,7 +278,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-cinnamoncustomer/Pods-cinnamoncustomer-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Cinnamon/Pods-Cinnamon-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/AppAuth/AppAuthCore_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXApplication/ExpoApplication_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
@@ -274,6 +300,8 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/StripePayments/Stripe3DS2.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/StripePaymentsUI/StripePaymentsUIBundle.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/StripeUICore/StripeUICoreBundle.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/expo-dev-launcher/EXDevLauncher.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/expo-dev-menu/EXDevMenu.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -298,43 +326,21 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Stripe3DS2.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StripePaymentsUIBundle.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StripeUICoreBundle.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXDevLauncher.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXDevMenu.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cinnamoncustomer/Pods-cinnamoncustomer-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Cinnamon/Pods-Cinnamon-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CA9296DF62D2CE363862547D /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env",
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/cinnamoncustomer/cinnamoncustomer.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-cinnamoncustomer/expo-configure-project.sh",
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-cinnamoncustomer/ExpoModulesProvider.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-cinnamoncustomer/expo-configure-project.sh\"\n";
-		};
-		E3DBC085335B8E83FA2678BB /* [CP] Embed Pods Frameworks */ = {
+		D8AA94B86CF98EC401B60A09 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-cinnamoncustomer/Pods-cinnamoncustomer-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Cinnamon/Pods-Cinnamon-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
@@ -347,7 +353,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cinnamoncustomer/Pods-cinnamoncustomer-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Cinnamon/Pods-Cinnamon-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -358,7 +364,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				C54F33BCED75D2F24B6B6970 /* ExpoModulesProvider.swift in Sources */,
+				561E2259CD3CEDCBF6E1CF5C /* ExpoModulesProvider.swift in Sources */,
+				3787F73B58EA4B5CB9CDEA85 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,18 +374,19 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8DFB3DA7CED44AFF23F3E532 /* Pods-cinnamoncustomer.debug.xcconfig */;
+			baseConfigurationReference = 92AE3C041C8E714062207B40 /* Pods-Cinnamon.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = cinnamoncustomer/cinnamoncustomer.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Cinnamon/Cinnamon.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3FSK65C843;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = cinnamoncustomer/Info.plist;
+				INFOPLIST_FILE = Cinnamon/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -391,25 +399,26 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.anonymous.cinnamoncustomer;
-				PRODUCT_NAME = cinnamoncustomer;
-				SWIFT_OBJC_BRIDGING_HEADER = "cinnamoncustomer/cinnamoncustomer-Bridging-Header.h";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.anonymous.cinnamon";
+				PRODUCT_NAME = "Cinnamon";
+				SWIFT_OBJC_BRIDGING_HEADER = "Cinnamon/Cinnamon-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 203D0D96BDB54A650258BEFE /* Pods-cinnamoncustomer.release.xcconfig */;
+			baseConfigurationReference = EAAE9EE4A4E282A2FCE422C6 /* Pods-Cinnamon.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = cinnamoncustomer/cinnamoncustomer.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Cinnamon/Cinnamon.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = cinnamoncustomer/Info.plist;
+				DEVELOPMENT_TEAM = 3FSK65C843;
+				INFOPLIST_FILE = Cinnamon/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -422,11 +431,11 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.anonymous.cinnamoncustomer;
-				PRODUCT_NAME = cinnamoncustomer;
-				SWIFT_OBJC_BRIDGING_HEADER = "cinnamoncustomer/cinnamoncustomer-Bridging-Header.h";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.anonymous.cinnamon";
+				PRODUCT_NAME = "Cinnamon";
+				SWIFT_OBJC_BRIDGING_HEADER = "Cinnamon/Cinnamon-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -552,7 +561,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "cinnamoncustomer" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Cinnamon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -561,7 +570,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "cinnamoncustomer" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Cinnamon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

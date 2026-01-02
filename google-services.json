@@ -14,11 +14,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "919849328876-k5i9hme1h61r96ven5odvvujh6l61ea6.apps.googleusercontent.com",
+          "client_id": "919849328876-8d4bm3sarjvlkqc7hun5up8ro5g7gt41.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.anonymous.cinnamoncustomer",
-            "certificate_hash": "439e59ed6f53701416432cd5665a607a7df52c67"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "919849328876-tfl9h2v5tsnvv7oona3p0hpdbsmb911v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.cinnamoncustomer",
+            "certificate_hash": "97031ff87a8109a9d1a97af64b11eb81dfc464d2"
           }
         },
         {

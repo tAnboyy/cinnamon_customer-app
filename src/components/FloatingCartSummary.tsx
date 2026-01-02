@@ -12,7 +12,7 @@ interface FloatingCartSummaryProps {
 const FloatingCartSummary: React.FC<FloatingCartSummaryProps> = ({ onPress, extraBottom = 0 }) => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce((sum, item) => sum + (typeof item.price === 'number' ? item.price * item.quantity : 0), 0);
   const insets = useSafeAreaInsets();
 
   if (totalItems === 0) {
@@ -29,7 +29,7 @@ const FloatingCartSummary: React.FC<FloatingCartSummaryProps> = ({ onPress, extr
       activeOpacity={0.9}
     >
       <Text style={styles.text}>{totalItems} items</Text>
-      <Text style={styles.text}>Total: ${totalPrice.toFixed(2)}</Text>
+  <Text style={styles.text}>Total: ${Number(totalPrice || 0).toFixed(2)}</Text>
     </TouchableOpacity>
   );
 };
