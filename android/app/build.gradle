@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.cinnamon'
+    namespace 'com.tandevv.cinnamon_customer'
     defaultConfig {
-        applicationId 'com.anonymous.cinnamon'
+        applicationId 'com.tandevv.cinnamon_customer'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -181,4 +181,9 @@ dependencies {
     }
 }
 
+def googleServicesJson = System.getenv("GOOGLE_SERVICES_JSON")
+if (googleServicesJson) {
+    def googleServicesFile = new File("${projectDir}/google-services.json")
+    googleServicesFile.write(googleServicesJson)
+}
 apply plugin: 'com.google.gms.google-services'

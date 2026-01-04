@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const STORAGE_KEYS = {
   DEFAULT_CONTACT: 'user_default_contact_number',
@@ -85,7 +86,18 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     try {
+      // Sign out from Firebase
       await auth.signOut();
+      
+      // Sign out from Google Sign-In to clear cached credentials
+      try {
+        await GoogleSignin.signOut();
+      } catch (googleError) {
+        // Google Sign-In might not be signed in, that's okay
+        console.log('[ProfileScreen] Google Sign-In not active');
+      }
+      
+      console.log('[ProfileScreen] Logout successful');
     } catch (e) {
       console.error('Logout failed', e);
       Alert.alert('Logout failed', 'Please try again.');

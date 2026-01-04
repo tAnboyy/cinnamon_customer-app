@@ -1,4 +1,4 @@
-package com.anonymous.cinnamon
+package com.tandevv.cinnamon_customer
 
 import android.app.Application
 import android.content.res.Configuration

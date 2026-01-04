@@ -25,10 +25,8 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="cinnamoncustomer"/>
-        <data android:scheme="exp+cinnamon"/>
-        <data android:scheme="exp+cinnamoncustomer"/>
         <data android:scheme="cinnamon"/>
+        <data android:scheme="exp+cinnamon"/>
       </intent-filter>
     </activity>
   </application>

@@ -15,7 +15,7 @@
       "@react-native-community/datetimepicker"
     ],
     "android": {
-      "package": "com.anonymous.cinnamon",
+      "package": "com.tandevv.cinnamon_customer",
       "googleServicesFile": "./google-services.json",
       "statusBar": {
         "backgroundColor": "#ffffff",
@@ -24,7 +24,7 @@
       }
     },
     "ios": {
-      "bundleIdentifier": "com.anonymous.cinnamon",
+      "bundleIdentifier": "com.tandevv.cinnamon-customer",
       "googleServicesFile": "./GoogleService-Info.plist",
       "statusBar": {
         "barStyle": "dark"
