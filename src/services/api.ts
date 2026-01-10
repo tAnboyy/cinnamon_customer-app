@@ -3,10 +3,11 @@ import { Platform } from 'react-native';
 import { CartItem } from '../redux/cartSlice';
 
 // Backend API (menu, orders, Stripe payments - everything)
-const API_URL = 'http://172.20.1.229:8080/api';
+const API_URL = __DEV__ 
+  ? 'http://172.20.1.229:8080/api'  // Local development
+  : 'https://cinnamonbackend-production.up.railway.app/api';  // Production
 
-console.log('[api] Base URL =', API_URL);
-
+console.log('[api] Base URL =', API_URL, '(ENV:', __DEV__ ? 'development' : 'production', ')');
 
 export const getMenuItems = () => {
     console.log('[api] GET /menu/all');

@@ -5,12 +5,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider, useSelector } from 'react-redux';
 import { store, RootState } from './src/redux/store';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebaseConfig';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import * as Font from 'expo-font';
 
 import MenuScreen from './src/screens/MenuScreen';
 import CateringScreen from './src/screens/CateringScreen';
@@ -191,6 +192,34 @@ function AppContent() {
 console.log('App component rendering');
   
 function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFonts() {
+      try {
+        // Load Ionicons font file directly
+        await Font.loadAsync({
+          'Ionicons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+        });
+        setFontsLoaded(true);
+        console.log('Fonts loaded successfully');
+      } catch (error) {
+        console.error('Error loading fonts:', error);
+        // Still set to true to allow app to render
+        setFontsLoaded(true);
+      }
+    }
+    loadFonts();
+  }, []);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+        <ActivityIndicator size="large" color="#1a1a1a" />
+      </View>
+    );
+  }
+
   return (
     <ExpoStripeProvider>
         <Provider store={store}>
