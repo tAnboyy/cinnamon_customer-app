@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { MenuItem } from '../types';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, updateQuantity } from '../redux/cartSlice';
@@ -265,12 +265,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   button: {
-    backgroundColor: '#000',
+    backgroundColor: '#1a1a1a',
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   buttonText: {
     color: '#fff',
@@ -296,6 +299,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#e0e0e0',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   qtyCircleText: {
     color: '#000',
@@ -369,11 +375,14 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
   },
   compactButton: {
-    backgroundColor: '#000',
+    backgroundColor: '#1a1a1a',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
     alignItems: 'center',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   compactButtonText: {
     color: '#fff',
@@ -398,6 +407,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#e0e0e0',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   compactQtyCircleText: {
     color: '#000',

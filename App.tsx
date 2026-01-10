@@ -5,13 +5,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider, useSelector } from 'react-redux';
 import { store, RootState } from './src/redux/store';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { StripeProvider } from '@stripe/stripe-react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/firebaseConfig';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Ionicons } from '@expo/vector-icons';
 
 import MenuScreen from './src/screens/MenuScreen';
@@ -27,6 +25,8 @@ import PaymentConfirmationScreen from './src/screens/PaymentConfirmationScreen';
 
 import ExpoStripeProvider from 'src/components/stripe-provider';
 
+console.log('App.tsx loaded');
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -40,23 +40,54 @@ function Header() {
     <View
       style={{
         paddingTop: insets.top,
-        height: 56 + insets.top,
+        height: 64 + insets.top,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 16,
+        paddingHorizontal: Platform.OS === 'web' ? 32 : 16,
         backgroundColor: '#fff',
-        elevation: 2,
-        borderBottomColor: '#eee',
-        borderBottomWidth: 1,
+        maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+        width: '100%',
+        alignSelf: 'center',
+        ...(Platform.OS === 'web' && {
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        }),
+        ...Platform.select({
+          native: {
+            elevation: 2,
+            borderBottomColor: '#eee',
+            borderBottomWidth: 1,
+          },
+        }),
       }}
     >
-      <Text style={{ fontSize: 18, fontWeight: '600', flex: 1 }}>Cinnamon Live</Text>
-      <Text>🔔</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={{ marginLeft: 12 }} accessibilityRole="button" accessibilityLabel="Open cart">
-        <Text>🛒</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+        <Text style={{ fontSize: 24, marginRight: 8 }}>🍽️</Text>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: '#1a1a1a' }}>Cinnamon Live</Text>
+      </View>
+      <TouchableOpacity style={{ padding: 8, marginRight: 8 }}>
+        <Text style={{ fontSize: 22 }}>🔔</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        onPress={() => navigation.navigate('Cart')} 
+        style={{ padding: 8, position: 'relative' }} 
+        accessibilityRole="button" 
+        accessibilityLabel="Open cart"
+      >
+        <Text style={{ fontSize: 24 }}>🛒</Text>
         {totalItems > 0 && (
-          <View style={{ position: 'absolute', right: -8, top: -8, backgroundColor: 'red', borderRadius: 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: 'white', fontSize: 12 }}>{totalItems}</Text>
+          <View style={{ 
+            position: 'absolute', 
+            right: 0, 
+            top: 0, 
+            backgroundColor: '#d32f2f', 
+            borderRadius: 12, 
+            minWidth: 24, 
+            height: 24, 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            paddingHorizontal: 6,
+          }}>
+            <Text style={{ color: 'white', fontSize: 12, fontWeight: '700' }}>{totalItems}</Text>
           </View>
         )}
       </TouchableOpacity>
@@ -95,10 +126,20 @@ function MainTabs({ navigation }: any) {
               }
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: '#000',
-            tabBarInactiveTintColor: '#666',
-            tabBarStyle: { backgroundColor: '#fff' },
-            tabBarLabelStyle: { fontSize: 12 },
+            tabBarActiveTintColor: '#1a1a1a',
+            tabBarInactiveTintColor: '#9e9e9e',
+            tabBarStyle: { 
+              backgroundColor: '#fff', 
+              borderTopWidth: 1, 
+              borderTopColor: '#e0e0e0',
+              height: Platform.OS === 'web' ? 60 : 56,
+              paddingBottom: Platform.OS === 'web' ? 8 : 4,
+              paddingTop: 8,
+              ...(Platform.OS === 'web' && {
+                boxShadow: '0 -2px 4px rgba(0, 0, 0, 0.1)',
+              }),
+            },
+            tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
           })}
         >
           <Tab.Screen name="Menu" component={MenuScreen} />
@@ -116,10 +157,13 @@ function AppContent() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Configure Google Sign-In once at app startup
-    GoogleSignin.configure({
-      webClientId: '919849328876-05jlgu8kj4jn29jbgk89e804nn2nqig3.apps.googleusercontent.com',
-    });
+    // Configure Google Sign-In only on native platforms
+    if (Platform.OS !== 'web') {
+      const { GoogleSignin } = require('@react-native-google-signin/google-signin');
+      GoogleSignin.configure({
+        webClientId: '919849328876-05jlgu8kj4jn29jbgk89e804nn2nqig3.apps.googleusercontent.com',
+      });
+    }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -144,7 +188,8 @@ function AppContent() {
     </NavigationContainer>
   );
 }
-
+console.log('App component rendering');
+  
 function App() {
   return (
     <ExpoStripeProvider>
@@ -157,4 +202,4 @@ function App() {
   );
 }
 
-export default registerRootComponent(App);
+export default App;

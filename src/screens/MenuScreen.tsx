@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, Alert, RefreshControl } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, Alert, RefreshControl, Platform, Animated } from 'react-native';
 import { getMenuItems } from '../services/api';
 // import { menuItems as dummyMenuItems } from '../data/dummyData';
 import ItemCard from '../components/ItemCard';
@@ -11,6 +11,8 @@ const MenuScreen = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const scrollY = useRef(0);
+  const headerHeight = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     loadMenuItems();
@@ -117,19 +119,52 @@ const MenuScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.screenTitle}>Menu</Text>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search dishes..."
-          placeholderTextColor="#999"
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
-      <SectionList
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
+          <Animated.View style={{
+            opacity: Platform.OS === 'web' ? headerHeight : 1,
+            maxHeight: Platform.OS === 'web' ? headerHeight.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 200]
+            }) : undefined,
+            overflow: 'hidden'
+          }}>
+            <Text style={styles.screenTitle}>Menu</Text>
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search dishes..."
+              placeholderTextColor="#999"
+              value={search}
+              onChangeText={setSearch}
+            />
+          </Animated.View>
+        </View>
+        <SectionList
         sections={sections}
         stickySectionHeadersEnabled={true}
+        onScroll={Platform.OS === 'web' ? (event) => {
+          const currentScrollY = event.nativeEvent.contentOffset.y;
+          const diff = currentScrollY - scrollY.current;
+          
+          if (diff > 5 && currentScrollY > 50) {
+            // Scrolling down
+            Animated.timing(headerHeight, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: false
+            }).start();
+          } else if (diff < -5) {
+            // Scrolling up
+            Animated.timing(headerHeight, {
+              toValue: 1,
+              duration: 200,
+              useNativeDriver: false
+            }).start();
+          }
+          
+          scrollY.current = currentScrollY;
+        } : undefined}
+        scrollEventThrottle={16}
         renderItem={({ item: pair }) => (
           <View style={styles.gridContainer}>
             {pair.map((item, index) => (
@@ -152,8 +187,8 @@ const MenuScreen = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#000']}
-            tintColor="#000"
+            colors={['#1a1a1a']}
+            tintColor="#1a1a1a"
           />
         }
         ListEmptyComponent={
@@ -165,7 +200,9 @@ const MenuScreen = () => {
             </Text>
           </View>
         }
+        showsVerticalScrollIndicator={false}
       />
+      </View>
     </View>
   );
 };
@@ -173,12 +210,23 @@ const MenuScreen = () => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: '#f5f5f5',
+      ...(Platform.OS === 'web' && {
+        minHeight: '100vh',
+      }),
+    },
+    contentWrapper: {
+      flex: 1,
+      maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+      width: '100%',
+      alignSelf: 'center',
       backgroundColor: '#fff',
     },
     centerContent: {
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 20,
+      padding: 32,
+      minHeight: 200,
     },
     loadingText: {
       marginTop: 16,
@@ -193,10 +241,13 @@ const styles = StyleSheet.create({
     },
     retryText: {
       fontSize: 16,
-      color: '#000',
+      color: '#1a1a1a',
       fontWeight: '600',
       textDecorationLine: 'underline',
       marginTop: 8,
+      ...(Platform.OS === 'web' && {
+        cursor: 'pointer',
+      }),
     },
     emptyText: {
       fontSize: 16,
@@ -210,24 +261,31 @@ const styles = StyleSheet.create({
     },
     header: {
       backgroundColor: '#fff',
-      paddingBottom: 8,
+      paddingHorizontal: Platform.OS === 'web' ? 24 : 12,
+      paddingBottom: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: '#e0e0e0',
     },
     screenTitle: {
       textAlign: 'center',
-      fontSize: 22,
+      fontSize: 24,
       fontWeight: '700',
-      color: '#000',
-      marginTop: 12,
+      color: '#1a1a1a',
+      marginTop: 16,
+      marginBottom: 12,
     },
     searchBar: {
-      height: 40,
-      borderColor: 'gray',
+      height: 48,
+      borderColor: '#e0e0e0',
       borderWidth: 1,
-      borderRadius: 8,
-      margin: 12,
-      marginBottom: 4,
-      paddingLeft: 8,
-      color: '#000',
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      color: '#1a1a1a',
+      fontSize: 16,
+      backgroundColor: '#fafafa',
+      ...(Platform.OS === 'web' && {
+        outlineStyle: 'none',
+      }),
     },
     sectionHeaderContainer: {
       backgroundColor: '#fff',
@@ -235,23 +293,29 @@ const styles = StyleSheet.create({
       borderBottomColor: '#e0e0e0',
     },
     sectionHeader: {
-      fontSize: 20,
-      fontWeight: 'bold',
+      fontSize: 18,
+      fontWeight: '700',
       backgroundColor: '#f8f8f8',
       paddingVertical: 12,
-      paddingHorizontal: 16,
-      color: '#000',
+      paddingHorizontal: Platform.OS === 'web' ? 24 : 16,
+      color: '#1a1a1a',
       borderTopWidth: 1,
       borderTopColor: '#e0e0e0',
+      textAlign: Platform.OS === 'web' ? 'center' : 'left',
     },
     gridContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      paddingHorizontal: 8,
+      paddingHorizontal: Platform.OS === 'web' ? 16 : 8,
+      paddingVertical: 8,
+      maxWidth: Platform.OS === 'web' ? 800 : undefined,
+      alignSelf: Platform.OS === 'web' ? 'center' : undefined,
+      width: '100%',
     },
     gridItem: {
       width: '50%',
       paddingHorizontal: 8,
+      marginBottom: 8,
     },
   });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, ScrollView, ActivityIndicator, Platform } from 'react-native';
 import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -114,10 +114,11 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Profile</Text>
-      </View>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Profile</Text>
+        </View>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       
       <View style={styles.userInfo}>
         <Text style={styles.label}>Email: </Text>
@@ -182,6 +183,7 @@ const ProfileScreen = () => {
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
+      </View>
     </View>
   );
 };
@@ -189,10 +191,20 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+    ...(Platform.OS === 'web' && {
+      minHeight: '100vh',
+    }),
+  },
+  contentWrapper: {
+    flex: 1,
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    width: '100%',
+    alignSelf: 'center',
     backgroundColor: '#fff',
   },
   scrollContent: {
-    padding: 16,
+    padding: Platform.OS === 'web' ? 32 : 16,
     paddingBottom: 40,
   },
   centerContent: {
@@ -201,33 +213,36 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#fff',
-    paddingBottom: 8,
+    paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 16,
+    marginBottom: 4,
   },
   userInfo: {
     backgroundColor: '#f8f8f8',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 24,
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 32,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
     color: '#666',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   emailText: {
     fontSize: 16,
-    color: '#000',
-    fontWeight: '500',
+    color: '#1a1a1a',
+    fontWeight: '600',
   },
   section: {
     marginBottom: 32,
@@ -235,7 +250,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
     marginBottom: 8,
   },
   sectionSubtitle: {
@@ -249,12 +264,17 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     fontSize: 16,
-    color: '#000',
-    backgroundColor: '#fff',
+    color: '#1a1a1a',
+    backgroundColor: '#fafafa',
+    minHeight: 48,
+    ...(Platform.OS === 'web' && {
+      outlineStyle: 'none',
+    }),
   },
   textArea: {
     height: 100,
@@ -268,18 +288,21 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    height: 44,
-    borderRadius: 8,
+    minHeight: 52,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   saveButton: {
-    backgroundColor: '#000',
+    backgroundColor: '#1a1a1a',
   },
   clearButton: {
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#e0e0e0',
   },
   buttonDisabled: {
     opacity: 0.5,
@@ -290,15 +313,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   clearButtonText: {
-    color: '#000',
+    color: '#1a1a1a',
   },
   logoutBtn: {
-    height: 44,
-    borderRadius: 8,
-    backgroundColor: '#ff5252',
+    minHeight: 52,
+    borderRadius: 12,
+    backgroundColor: '#d32f2f',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   logoutText: {
     color: '#fff',

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, RefreshControl, TouchableOpacity, Platform } from 'react-native';
 import ItemCard from '../components/ItemCard';
 import { MenuItem } from '../types';
 import { getPastOrders } from '../services/api';
@@ -93,15 +93,17 @@ const PastOrdersScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.screenTitle}>Past Orders</Text>
-      </View>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <FlatList
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
+          <Text style={styles.screenTitle}>Past Orders</Text>
+        </View>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <FlatList
         data={orders}
         keyExtractor={(order) => order.id}
         contentContainerStyle={{ paddingBottom: 160 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#1a1a1a" colors={['#1a1a1a']} />}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyText}>No past orders found.</Text>
@@ -149,6 +151,7 @@ const PastOrdersScreen: React.FC = () => {
           </View>
         )}
       />
+      </View>
     </View>
   );
 };
@@ -156,20 +159,31 @@ const PastOrdersScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+    ...(Platform.OS === 'web' && {
+      minHeight: '100vh',
+    }),
+  },
+  contentWrapper: {
+    flex: 1,
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    width: '100%',
+    alignSelf: 'center',
     backgroundColor: '#fff',
   },
   header: {
     backgroundColor: '#fff',
-    paddingBottom: 8,
+    paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
   screenTitle: {
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
-    color: '#000',
-    marginTop: 12,
+    color: '#1a1a1a',
+    marginTop: 16,
+    marginBottom: 4,
   },
   title: {
     textAlign: 'center',
@@ -196,16 +210,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   orderCard: {
-    marginHorizontal: 16,
+    marginHorizontal: Platform.OS === 'web' ? 'auto' : 16,
     marginVertical: 8,
-    padding: 16,
+    padding: 20,
     borderRadius: 12,
     backgroundColor: '#ffffff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    maxWidth: Platform.OS === 'web' ? 700 : undefined,
+    width: Platform.OS === 'web' ? '90%' : undefined,
   },
   orderHeader: {
     flexDirection: 'row',
@@ -216,7 +234,7 @@ const styles = StyleSheet.create({
   orderTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
   },
   orderStatus: {
     fontSize: 12,
@@ -232,17 +250,20 @@ const styles = StyleSheet.create({
   orderTotal: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
   },
   reorderBtn: {
     alignSelf: 'flex-start',
-    backgroundColor: '#000',
+    backgroundColor: '#1a1a1a',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 10,
     marginTop: 12,
     minWidth: 100,
     alignItems: 'center',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   reorderText: {
     color: '#fff',
@@ -263,12 +284,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#fafafa',
   },
   itemName: {
-    color: '#333',
+    color: '#666',
     fontSize: 14,
     flex: 1,
   },
   itemQty: {
-    color: '#000',
+    color: '#1a1a1a',
     fontWeight: '600',
     fontSize: 14,
     marginLeft: 12,
@@ -313,7 +334,7 @@ const styles = StyleSheet.create({
   },
   metaValue: {
     fontSize: 13,
-    color: '#000',
+    color: '#1a1a1a',
     fontWeight: '600',
   },
   chipsRow: {

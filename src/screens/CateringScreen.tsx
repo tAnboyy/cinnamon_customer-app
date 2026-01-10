@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Platform, Animated } from 'react-native';
 import { Linking } from 'react-native';
 // import { getMenuItems } from '../services/api';
 import { menuItems as dummyMenuItems } from '../data/dummyData';
@@ -12,6 +12,8 @@ const CateringScreen = () => {
     const [loading, setLoading] = useState(true);
     const [showCallModal, setShowCallModal] = useState(false);
     const phoneNumbers = ['9842429243', '9812345678', '9801122334'];
+    const scrollY = useRef(0);
+    const headerHeight = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
         // Use same menu items for Catering view (no add to cart)
@@ -51,17 +53,27 @@ const CateringScreen = () => {
   
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.screenTitle}>Catering</Text>
-          <TouchableOpacity
-            style={styles.callContainer}
-            onPress={() => setShowCallModal(true)}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.callIcon}>📞</Text>
-            <Text style={styles.callText}>Call to place Catering orders</Text>
-          </TouchableOpacity>
-        </View>
+        <View style={styles.contentWrapper}>
+          <View style={styles.header}>
+            <Animated.View style={{
+              opacity: Platform.OS === 'web' ? headerHeight : 1,
+              maxHeight: Platform.OS === 'web' ? headerHeight.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 200]
+              }) : undefined,
+              overflow: 'hidden'
+            }}>
+              <Text style={styles.screenTitle}>Catering</Text>
+              <TouchableOpacity
+                style={styles.callContainer}
+                onPress={() => setShowCallModal(true)}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.callIcon}>📞</Text>
+                <Text style={styles.callText}>Call to place Catering orders</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
         <Modal
           visible={showCallModal}
           transparent
@@ -107,16 +119,48 @@ const CateringScreen = () => {
             </View>
           </View>
         </Modal>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search catering..."
-          placeholderTextColor="#666"
-          value={search}
-          onChangeText={setSearch}
-        />
+        <Animated.View style={{
+          opacity: Platform.OS === 'web' ? headerHeight : 1,
+          maxHeight: Platform.OS === 'web' ? headerHeight.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 100]
+          }) : undefined,
+          overflow: 'hidden'
+        }}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search catering..."
+            placeholderTextColor="#666"
+            value={search}
+            onChangeText={setSearch}
+          />
+        </Animated.View>
         <SectionList
           sections={sections}
           stickySectionHeadersEnabled={true}
+          onScroll={Platform.OS === 'web' ? (event) => {
+            const currentScrollY = event.nativeEvent.contentOffset.y;
+            const diff = currentScrollY - scrollY.current;
+            
+            if (diff > 5 && currentScrollY > 50) {
+              // Scrolling down
+              Animated.timing(headerHeight, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: false
+              }).start();
+            } else if (diff < -5) {
+              // Scrolling up
+              Animated.timing(headerHeight, {
+                toValue: 1,
+                duration: 200,
+                useNativeDriver: false
+              }).start();
+            }
+            
+            scrollY.current = currentScrollY;
+          } : undefined}
+          scrollEventThrottle={16}
           renderItem={({ item: pair }) => (
             <View style={styles.gridContainer}>
               {pair.map((item) => (
@@ -135,7 +179,9 @@ const CateringScreen = () => {
           )}
           keyExtractor={(item, index) => `pair-${index}`}
           contentContainerStyle={{ paddingBottom: 160 }}
+          showsVerticalScrollIndicator={false}
         />
+        </View>
       </View>
     );
   };
@@ -143,6 +189,16 @@ const CateringScreen = () => {
   const styles = StyleSheet.create({
       container: {
         flex: 1,
+        backgroundColor: '#f5f5f5',
+        ...(Platform.OS === 'web' && {
+          minHeight: '100vh',
+        }),
+      },
+      contentWrapper: {
+        flex: 1,
+        maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+        width: '100%',
+        alignSelf: 'center',
         backgroundColor: '#fff',
       },
       modalBackdrop: {
@@ -173,6 +229,9 @@ const CateringScreen = () => {
         paddingHorizontal: 14,
         paddingVertical: 10,
         borderRadius: 8,
+        ...(Platform.OS === 'web' && {
+          cursor: 'pointer',
+        }),
       },
       modalBtnText: {
         fontWeight: '700',
@@ -181,9 +240,12 @@ const CateringScreen = () => {
         paddingVertical: 12,
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
+        ...(Platform.OS === 'web' && {
+          cursor: 'pointer',
+        }),
       },
       numText: {
-        color: '#000',
+        color: '#1a1a1a',
         fontSize: 16,
         fontWeight: '600',
       },
@@ -196,21 +258,24 @@ const CateringScreen = () => {
       },
       header: {
         backgroundColor: '#fff',
-        paddingBottom: 8,
+        paddingBottom: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
       },
       headerTitle: {
         textAlign: 'center',
         width: '100%',
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: '700',
-        color: '#000',
+        color: '#1a1a1a',
       },
       screenTitle: {
         textAlign: 'center',
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: '700',
-        color: '#000',
-        marginTop: 12,
+        color: '#1a1a1a',
+        marginTop: 16,
+        marginBottom: 4,
       },
       callContainer: {
         flexDirection: 'row',
@@ -224,6 +289,9 @@ const CateringScreen = () => {
         marginTop: 8,
         borderColor: 'gray',
         borderWidth: 0.5,
+        ...(Platform.OS === 'web' && {
+          cursor: 'pointer',
+        }),
       },
       callText: {
         color: '#000',
@@ -234,13 +302,19 @@ const CateringScreen = () => {
         fontSize: 16,
       },
       searchBar: {
-        height: 40,
-        borderColor: 'gray',
+        height: 48,
+        borderColor: '#e0e0e0',
         borderWidth: 1,
-        borderRadius: 8,
-        margin: 12,
-        paddingLeft: 8,
-        color: '#000',
+        borderRadius: 12,
+        marginHorizontal: Platform.OS === 'web' ? 24 : 12,
+        marginVertical: 12,
+        paddingHorizontal: 16,
+        color: '#1a1a1a',
+        fontSize: 16,
+        backgroundColor: '#fafafa',
+        ...(Platform.OS === 'web' && {
+          outlineStyle: 'none',
+        }),
       },
       sectionHeaderContainer: {
         backgroundColor: '#fff',
@@ -248,23 +322,29 @@ const CateringScreen = () => {
         borderBottomColor: '#e0e0e0',
       },
       sectionHeader: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 18,
+        fontWeight: '700',
         backgroundColor: '#f8f8f8',
         paddingVertical: 12,
-        paddingHorizontal: 16,
-        color: '#000',
+        paddingHorizontal: Platform.OS === 'web' ? 24 : 16,
+        color: '#1a1a1a',
         borderTopWidth: 1,
         borderTopColor: '#e0e0e0',
+        textAlign: Platform.OS === 'web' ? 'center' : 'left',
       },
       gridContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        paddingHorizontal: 8,
+        paddingHorizontal: Platform.OS === 'web' ? 16 : 8,
+        paddingVertical: 8,
+        maxWidth: Platform.OS === 'web' ? 800 : undefined,
+        alignSelf: Platform.OS === 'web' ? 'center' : undefined,
+        width: '100%',
       },
       gridItem: {
         width: '50%',
         paddingHorizontal: 8,
+        marginBottom: 8,
       },
     });
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, SectionList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SectionList, TouchableOpacity, Platform } from 'react-native';
 import { getWeeklyMealPlan } from '../services/api';
 import { useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,10 +40,11 @@ const MealPlanScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.screenTitle}>Weekly Meal Plans</Text>
-      </View>
-      <SectionList
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
+          <Text style={styles.screenTitle}>Weekly Meal Plans</Text>
+        </View>
+        <SectionList
         sections={sections}
         keyExtractor={(item, index) => `${item.title}-${index}`}
         renderSectionHeader={({ section: { title } }) => (
@@ -96,9 +97,11 @@ const MealPlanScreen = () => {
             })()}
           </View>
         )}
-        contentContainerStyle={{ paddingBottom: 24, paddingTop: 8 }}
+        contentContainerStyle={{ paddingBottom: 160, paddingTop: 8 }}
         stickySectionHeadersEnabled={true}
+        showsVerticalScrollIndicator={false}
       />
+      </View>
     </View>
   );
 };
@@ -106,18 +109,31 @@ const MealPlanScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+    ...(Platform.OS === 'web' && {
+      minHeight: '100vh',
+    }),
+  },
+  contentWrapper: {
+    flex: 1,
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    width: '100%',
+    alignSelf: 'center',
     backgroundColor: '#fff',
   },
   header: {
     backgroundColor: '#fff',
-    paddingBottom: 8,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
   },
   screenTitle: {
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
-    color: '#000',
-    marginTop: 12,
+    color: '#1a1a1a',
+    marginTop: 16,
+    marginBottom: 4,
   },
   title: {
     textAlign: 'center',
@@ -135,19 +151,20 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
   },
   sectionHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '700',
     backgroundColor: '#f8f8f8',
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    color: '#000',
+    paddingHorizontal: Platform.OS === 'web' ? 24 : 16,
+    color: '#1a1a1a',
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
+    textAlign: Platform.OS === 'web' ? 'center' : 'left',
   },
   dayHeader: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
     marginTop: 16,
     marginBottom: 8,
     paddingHorizontal: 20,
@@ -155,14 +172,18 @@ const styles = StyleSheet.create({
   mealCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 20,
     marginBottom: 12,
-    marginHorizontal: 16,
+    marginHorizontal: Platform.OS === 'web' ? 'auto' : 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    maxWidth: Platform.OS === 'web' ? 700 : undefined,
+    width: Platform.OS === 'web' ? '90%' : undefined,
   },
   firstMealCard: {
     marginTop: 12,
@@ -176,21 +197,21 @@ const styles = StyleSheet.create({
   mealTitle: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
   },
   mealPrice: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
   },
   mealItem: {
     fontSize: 14,
-    color: '#444',
+    color: '#666',
     marginVertical: 3,
     lineHeight: 20,
   },
   button: {
-    backgroundColor: '#000',
+    backgroundColor: '#1a1a1a',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 10,
@@ -198,6 +219,9 @@ const styles = StyleSheet.create({
     marginTop: 12,
     minWidth: 120,
     alignItems: 'center',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   buttonText: {
     color: '#fff',
@@ -223,16 +247,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#e0e0e0',
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+    }),
   },
   qtyCircleText: {
-    color: '#000',
+    color: '#1a1a1a',
     fontSize: 18,
     fontWeight: '600',
   },
   qtyCount: {
     minWidth: 24,
     textAlign: 'center',
-    color: '#000',
+    color: '#1a1a1a',
     fontSize: 16,
     fontWeight: '600',
   },
