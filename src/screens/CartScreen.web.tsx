@@ -34,6 +34,10 @@ const CartScreen = () => {
   const [confirmCashModal, setConfirmCashModal] = useState(false);
   const [orderDetailsModal, setOrderDetailsModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  // Minimum selectable date (today) in YYYY-MM-DD (local) to prevent past date selection
+  const pad = (n: number) => n < 10 ? `0${n}` : `${n}`;
+  const todayLocal = new Date();
+  const minDate = `${todayLocal.getFullYear()}-${pad(todayLocal.getMonth() + 1)}-${pad(todayLocal.getDate())}`;
   
   const totalAmount = useMemo(
     () => cartItems.reduce((sum, i) => sum + (typeof i.price === 'number' ? i.price * i.quantity : 0), 0),
@@ -66,7 +70,11 @@ const CartScreen = () => {
   const submitOrder = async (paymentIntentId?: string) => {
     const userId = auth.currentUser?.uid;
     if (!userId) {
-      Alert.alert('Not signed in', 'Please sign in to place an order.');
+      if (Platform.OS === 'web') {
+        alert('Please sign in to place an order.');
+      } else {
+        Alert.alert('Not signed in', 'Please sign in to place an order.');
+      }
       return;
     }
     const order = {
@@ -83,15 +91,21 @@ const CartScreen = () => {
     try {
       await placeOrder(order as any);
       dispatch(clearCart());
-      Alert.alert('Order Placed!', 'Your order has been placed successfully.');
-      try {
-        navigation.navigate('Main', { screen: 'Menu' });
-      } catch {
-        navigation.navigate('Main');
-      }
+      
+      // Navigate to confirmation screen instead of showing alert
+      navigation.navigate('PaymentConfirmation', { 
+        amount: totalAmount, 
+        pickupDate, 
+        pickupTime,
+        paymentMethod 
+      });
     } catch (error) {
       console.error('[CartScreen] Place order failed', (error as any)?.message || error);
-      Alert.alert('Error', 'Could not place order.');
+      if (Platform.OS === 'web') {
+        alert('Could not place order. Please try again.');
+      } else {
+        Alert.alert('Error', 'Could not place order.');
+      }
     }
   };
 
@@ -105,6 +119,24 @@ const CartScreen = () => {
         Alert.alert('Missing Info', 'Please fill pickup date, time, and contact number.');
       }
       return;
+    }
+
+    // Prevent past date selection
+    if (pickupDate) {
+      const [y, m, d] = pickupDate.split('-').map((s: string) => parseInt(s, 10));
+      if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+        const selected = new Date(y, m - 1, d);
+        const [minY, minM, minD] = minDate.split('-').map((s) => parseInt(s, 10));
+        const minSelected = new Date(minY, minM - 1, minD);
+        if (selected < minSelected) {
+          if (Platform.OS === 'web') {
+            alert('Please select today or a future date for pickup.');
+          } else {
+            Alert.alert('Invalid Date', 'Please select today or a future date for pickup.');
+          }
+          return;
+        }
+      }
     }
     
     if (paymentMethod === 'online') {
@@ -188,11 +220,6 @@ const CartScreen = () => {
           }
         } else if (confirmedIntent?.status === 'succeeded') {
           console.log('[CartScreen] Payment succeeded, submitting order...');
-          try {
-            navigation.navigate('PaymentConfirmation', { amount: totalAmount, pickupDate, pickupTime });
-          } catch (navErr) {
-            console.error('[CartScreen] Navigation error:', navErr);
-          }
           await submitOrder(confirmedIntent.id);
         }
       } catch (e) {
@@ -281,7 +308,7 @@ const CartScreen = () => {
             </View>
           }
           contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={Platform.OS === 'web'}
         />
 
       {cartItems.length > 0 && (
@@ -363,12 +390,13 @@ const CartScreen = () => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
+            <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={Platform.OS === 'web'}>
               <Text style={styles.modalFormLabel}>Pickup Date *</Text>
               {Platform.OS === 'web' ? (
                 <input
                   type="date"
                   value={pickupDate}
+                  min={minDate}
                   onChange={(e: any) => setPickupDate(e.target.value)}
                   style={{
                     borderWidth: 1,

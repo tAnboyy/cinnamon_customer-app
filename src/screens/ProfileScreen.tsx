@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, ScrollView,
 import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useDispatch } from 'react-redux';
+import { clearCart } from '../redux/cartSlice';
 
 const STORAGE_KEYS = {
   DEFAULT_CONTACT: 'user_default_contact_number',
@@ -10,6 +12,7 @@ const STORAGE_KEYS = {
 };
 
 const ProfileScreen = () => {
+  const dispatch = useDispatch();
   const [defaultContact, setDefaultContact] = useState('');
   const [defaultNotes, setDefaultNotes] = useState('');
   const [loading, setLoading] = useState(true);
@@ -86,6 +89,9 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     try {
+      // Clear the cart
+      dispatch(clearCart());
+      
       // Sign out from Firebase
       await auth.signOut();
       
@@ -118,7 +124,7 @@ const ProfileScreen = () => {
         <View style={styles.header}>
           <Text style={styles.title}>Profile</Text>
         </View>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={Platform.OS === 'web'}>
       
       <View style={styles.userInfo}>
         <Text style={styles.label}>Email: </Text>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, Alert, RefreshControl, Platform, Animated } from 'react-native';
+import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, Alert, RefreshControl, Platform, Animated, TouchableOpacity, ScrollView } from 'react-native';
 import { getMenuItems } from '../services/api';
 // import { menuItems as dummyMenuItems } from '../data/dummyData';
 import ItemCard from '../components/ItemCard';
@@ -11,8 +11,10 @@ const MenuScreen = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const scrollY = useRef(0);
   const headerHeight = useRef(new Animated.Value(1)).current;
+  const sectionListRef = useRef<SectionList<any>>(null);
 
   useEffect(() => {
     loadMenuItems();
@@ -69,11 +71,23 @@ const MenuScreen = () => {
     }
   };
 
-  const filteredItems = items.filter(
+  const searchFilteredItems = items.filter(
     item =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.description.toLowerCase().includes(search.toLowerCase())
   );
+
+  const categories = ['All', ...Array.from(new Set(searchFilteredItems.map(i => i.category)))];
+
+  useEffect(() => {
+    if (selectedCategory !== 'All' && !categories.includes(selectedCategory)) {
+      setSelectedCategory('All');
+    }
+  }, [categories, selectedCategory]);
+
+  const filteredItems = selectedCategory === 'All'
+    ? searchFilteredItems
+    : searchFilteredItems.filter(item => item.category === selectedCategory);
 
   const groupedItems = filteredItems.reduce((acc, item) => {
     const { category } = item;
@@ -117,6 +131,13 @@ const MenuScreen = () => {
     );
   }
 
+  const scrollToTop = () => {
+    const responder = (sectionListRef.current as any)?.getScrollResponder?.();
+    if (responder?.scrollTo) {
+      responder.scrollTo({ y: 0, animated: true });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.contentWrapper}>
@@ -137,9 +158,38 @@ const MenuScreen = () => {
               value={search}
               onChangeText={setSearch}
             />
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.categoryChips}
+            >
+              {categories.map((category) => (
+                <TouchableOpacity
+                  key={category}
+                  style={[
+                    styles.categoryChip,
+                    selectedCategory === category && styles.categoryChipActive,
+                  ]}
+                  onPress={() => {
+                    setSelectedCategory(category);
+                    scrollToTop();
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.categoryChipText,
+                      selectedCategory === category && styles.categoryChipTextActive,
+                    ]}
+                  >
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </Animated.View>
         </View>
         <SectionList
+        ref={sectionListRef}
         sections={sections}
         stickySectionHeadersEnabled={true}
         onScroll={Platform.OS === 'web' ? (event) => {
@@ -188,7 +238,6 @@ const MenuScreen = () => {
             refreshing={refreshing}
             onRefresh={onRefresh}
             colors={['#1a1a1a']}
-            tintColor="#1a1a1a"
           />
         }
         ListEmptyComponent={
@@ -200,7 +249,7 @@ const MenuScreen = () => {
             </Text>
           </View>
         }
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={Platform.OS === 'web'}
       />
       </View>
     </View>
@@ -262,7 +311,7 @@ const styles = StyleSheet.create({
     header: {
       backgroundColor: '#fff',
       paddingHorizontal: Platform.OS === 'web' ? 24 : 12,
-      paddingBottom: 12,
+      paddingBottom: 8,
       borderBottomWidth: 1,
       borderBottomColor: '#e0e0e0',
     },
@@ -271,15 +320,17 @@ const styles = StyleSheet.create({
       fontSize: 24,
       fontWeight: '700',
       color: '#1a1a1a',
-      marginTop: 16,
-      marginBottom: 12,
+      marginTop: 14,
+      marginBottom: 10,
     },
     searchBar: {
       height: 48,
       borderColor: '#e0e0e0',
       borderWidth: 1,
       borderRadius: 12,
+      marginHorizontal: Platform.OS === 'web' ? 24 : 12,
       paddingHorizontal: 16,
+      marginBottom: 8,
       color: '#1a1a1a',
       fontSize: 16,
       backgroundColor: '#fafafa',
@@ -296,7 +347,7 @@ const styles = StyleSheet.create({
       fontSize: 18,
       fontWeight: '700',
       backgroundColor: '#f8f8f8',
-      paddingVertical: 12,
+      paddingVertical: 10,
       paddingHorizontal: Platform.OS === 'web' ? 24 : 16,
       color: '#1a1a1a',
       borderTopWidth: 1,
@@ -307,7 +358,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       flexWrap: 'wrap',
       paddingHorizontal: Platform.OS === 'web' ? 16 : 8,
-      paddingVertical: 8,
+      paddingVertical: 6,
       maxWidth: Platform.OS === 'web' ? 800 : undefined,
       alignSelf: Platform.OS === 'web' ? 'center' : undefined,
       width: '100%',
@@ -315,7 +366,36 @@ const styles = StyleSheet.create({
     gridItem: {
       width: '50%',
       paddingHorizontal: 8,
-      marginBottom: 8,
+      marginBottom: 10,
+    },
+    categoryChips: {
+      // align first chip left edge with searchBar left edge (match searchBar marginHorizontal)
+      paddingHorizontal: Platform.OS === 'web' ? 24 : 12,
+      paddingBottom: 8,
+      paddingTop: 4,
+      gap: 6,
+    },
+    categoryChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 14,
+      backgroundColor: '#f2f2f2',
+      borderWidth: 1,
+      borderColor: '#e0e0e0',
+    },
+    categoryChipActive: {
+      backgroundColor: '#1a1a1a',
+      borderColor: '#1a1a1a',
+    },
+    categoryChipText: {
+      color: '#1a1a1a',
+      fontSize: 13,
+      fontWeight: '600',
+    },
+    categoryChipTextActive: {
+      color: '#fff',
     },
   });
 

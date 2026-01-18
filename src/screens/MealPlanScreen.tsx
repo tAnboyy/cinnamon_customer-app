@@ -99,7 +99,7 @@ const MealPlanScreen = () => {
         )}
         contentContainerStyle={{ paddingBottom: 160, paddingTop: 8 }}
         stickySectionHeadersEnabled={true}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={Platform.OS === 'web'}
       />
       </View>
     </View>

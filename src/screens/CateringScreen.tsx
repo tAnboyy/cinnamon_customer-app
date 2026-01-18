@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Platform, Animated } from 'react-native';
+import { View, Text, SectionList, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Platform, Animated, ScrollView } from 'react-native';
 import { Linking } from 'react-native';
 // import { getMenuItems } from '../services/api';
 import { menuItems as dummyMenuItems } from '../data/dummyData';
@@ -11,9 +11,11 @@ const CateringScreen = () => {
     const [items, setItems] = useState<MenuItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [showCallModal, setShowCallModal] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('All');
     const phoneNumbers = ['9842429243', '9812345678', '9801122334'];
     const scrollY = useRef(0);
     const headerHeight = useRef(new Animated.Value(1)).current;
+    const sectionListRef = useRef<SectionList<any>>(null);
 
     useEffect(() => {
         // Use same menu items for Catering view (no add to cart)
@@ -21,11 +23,23 @@ const CateringScreen = () => {
         setLoading(false);
       }, []);
 
-    const filteredItems = items.filter(
+    const searchFilteredItems = items.filter(
       item =>
         item.name.toLowerCase().includes(search.toLowerCase()) ||
         item.description.toLowerCase().includes(search.toLowerCase())
     );
+
+    const categories = ['All', ...Array.from(new Set(searchFilteredItems.map(i => i.category)))];
+
+    useEffect(() => {
+      if (selectedCategory !== 'All' && !categories.includes(selectedCategory)) {
+        setSelectedCategory('All');
+      }
+    }, [categories, selectedCategory]);
+
+    const filteredItems = selectedCategory === 'All'
+      ? searchFilteredItems
+      : searchFilteredItems.filter(item => item.category === selectedCategory);
 
   const groupedItems = filteredItems.reduce((acc, item) => {
       const { category } = item;
@@ -51,6 +65,13 @@ const CateringScreen = () => {
       return <ActivityIndicator size={48} style={styles.container} />;
     }
   
+    const scrollToTop = () => {
+      const responder = (sectionListRef.current as any)?.getScrollResponder?.();
+      if (responder?.scrollTo) {
+        responder.scrollTo({ y: 0, animated: true });
+      }
+    };
+
     return (
       <View style={styles.container}>
         <View style={styles.contentWrapper}>
@@ -134,8 +155,37 @@ const CateringScreen = () => {
             value={search}
             onChangeText={setSearch}
           />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoryChips}
+          >
+            {categories.map((category) => (
+              <TouchableOpacity
+                key={category}
+                style={[
+                  styles.categoryChip,
+                  selectedCategory === category && styles.categoryChipActive,
+                ]}
+                onPress={() => {
+                  setSelectedCategory(category);
+                  scrollToTop();
+                }}
+              >
+                <Text
+                  style={[
+                    styles.categoryChipText,
+                    selectedCategory === category && styles.categoryChipTextActive,
+                  ]}
+                >
+                  {category}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </Animated.View>
         <SectionList
+          ref={sectionListRef}
           sections={sections}
           stickySectionHeadersEnabled={true}
           onScroll={Platform.OS === 'web' ? (event) => {
@@ -179,10 +229,10 @@ const CateringScreen = () => {
           )}
           keyExtractor={(item, index) => `pair-${index}`}
           contentContainerStyle={{ paddingBottom: 160 }}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={Platform.OS === 'web'}
         />
-        </View>
       </View>
+    </View>
     );
   };
   
@@ -258,7 +308,7 @@ const CateringScreen = () => {
       },
       header: {
         backgroundColor: '#fff',
-        paddingBottom: 12,
+        paddingBottom: 8,
         borderBottomWidth: 1,
         borderBottomColor: '#e0e0e0',
       },
@@ -274,19 +324,20 @@ const CateringScreen = () => {
         fontSize: 24,
         fontWeight: '700',
         color: '#1a1a1a',
-        marginTop: 16,
-        marginBottom: 4,
+        marginTop: 14,
+        marginBottom: 6,
       },
       callContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
         paddingHorizontal: 12,
-        paddingVertical: 8,
+        paddingVertical: 7,
         backgroundColor: '#60df39ff',
         borderRadius: 20,
         marginHorizontal: 16,
         marginTop: 8,
+        marginBottom: 6,
         borderColor: 'gray',
         borderWidth: 0.5,
         ...(Platform.OS === 'web' && {
@@ -307,7 +358,7 @@ const CateringScreen = () => {
         borderWidth: 1,
         borderRadius: 12,
         marginHorizontal: Platform.OS === 'web' ? 24 : 12,
-        marginVertical: 12,
+        marginVertical: 8,
         paddingHorizontal: 16,
         color: '#1a1a1a',
         fontSize: 16,
@@ -325,7 +376,7 @@ const CateringScreen = () => {
         fontSize: 18,
         fontWeight: '700',
         backgroundColor: '#f8f8f8',
-        paddingVertical: 12,
+        paddingVertical: 10,
         paddingHorizontal: Platform.OS === 'web' ? 24 : 16,
         color: '#1a1a1a',
         borderTopWidth: 1,
@@ -336,7 +387,7 @@ const CateringScreen = () => {
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingHorizontal: Platform.OS === 'web' ? 16 : 8,
-        paddingVertical: 8,
+        paddingVertical: 6,
         maxWidth: Platform.OS === 'web' ? 800 : undefined,
         alignSelf: Platform.OS === 'web' ? 'center' : undefined,
         width: '100%',
@@ -344,8 +395,37 @@ const CateringScreen = () => {
       gridItem: {
         width: '50%',
         paddingHorizontal: 8,
-        marginBottom: 8,
+        marginBottom: 10,
       },
+      categoryChips: {
+      // align first chip left edge with searchBar left edge (match searchBar marginHorizontal)
+      paddingHorizontal: Platform.OS === 'web' ? 24 : 12,
+        paddingBottom: Platform.OS === 'web' ? 12 : 10,
+      paddingTop: 4,
+      gap: 6,
+    },
+    categoryChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 14,
+      backgroundColor: '#f2f2f2',
+      borderWidth: 1,
+      borderColor: '#e0e0e0',
+    },
+    categoryChipActive: {
+      backgroundColor: '#1a1a1a',
+      borderColor: '#1a1a1a',
+    },
+    categoryChipText: {
+      color: '#1a1a1a',
+      fontSize: 13,
+      fontWeight: '600',
+    },
+    categoryChipTextActive: {
+      color: '#fff',
+    },
     });
 
 export default CateringScreen;

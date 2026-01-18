@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: 'relative',
     width: '100%',
-    height: 200,
+    height: 260,
     backgroundColor: '#f5f5f5',
   },
   image: {
@@ -208,10 +208,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   contentContainer: {
-    padding: 16,
+    padding: 12,
   },
   textSection: {
-    marginBottom: 12,
+    marginBottom: 8,
   },
   headerRow: {
     flexDirection: 'row',
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   actionSection: {
-    marginTop: 4,
+    marginTop: 0,
   },
   button: {
     backgroundColor: '#1a1a1a',
@@ -328,10 +328,10 @@ const styles = StyleSheet.create({
   },
   compactTop: {
     width: '100%',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   compactImageContainer: {
-    height: 100,
+    height: 120,
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   compactActions: {
-    marginTop: 'auto',
+    marginTop: 6,
   },
   compactButton: {
     backgroundColor: '#1a1a1a',

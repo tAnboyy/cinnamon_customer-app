@@ -41,6 +41,7 @@ function Header() {
     <View
       style={{
         paddingTop: insets.top,
+        paddingBottom: 0,
         height: 64 + insets.top,
         flexDirection: 'row',
         alignItems: 'center',
@@ -65,12 +66,9 @@ function Header() {
         <Text style={{ fontSize: 24, marginRight: 8 }}>🍽️</Text>
         <Text style={{ fontSize: 20, fontWeight: '700', color: '#1a1a1a' }}>Cinnamon Live</Text>
       </View>
-      <TouchableOpacity style={{ padding: 8, marginRight: 8 }}>
-        <Text style={{ fontSize: 22 }}>🔔</Text>
-      </TouchableOpacity>
       <TouchableOpacity 
         onPress={() => navigation.navigate('Cart')} 
-        style={{ padding: 8, position: 'relative' }} 
+        style={{ padding: 10, position: 'relative' }} 
         accessibilityRole="button" 
         accessibilityLabel="Open cart"
       >
@@ -99,12 +97,13 @@ function Header() {
 function MainTabs({ navigation }: any) {
     // Get the bottom tab bar height to offset the floating cart
     // Avoid overlap with the tab bar
-    const tabBarHeight = 56; // default fallback
+    const insets = useSafeAreaInsets();
+    const tabBarHeight = Platform.OS === 'web' ? 64 : 56;
     return (
       <>
         <Header />
         <Tab.Navigator
-          screenOptions={({ route }) => ({
+          screenOptions={({ route, navigation }) => ({
             headerShown: false,
             tabBarIcon: ({ color, size }) => {
               let iconName: keyof typeof Ionicons.glyphMap = 'home';
@@ -133,14 +132,23 @@ function MainTabs({ navigation }: any) {
               backgroundColor: '#fff', 
               borderTopWidth: 1, 
               borderTopColor: '#e0e0e0',
-              height: Platform.OS === 'web' ? 60 : 56,
-              paddingBottom: Platform.OS === 'web' ? 8 : 4,
-              paddingTop: 8,
+              height: Platform.OS === 'web' ? 64 : 56,
+              paddingBottom: Platform.OS === 'web' ? insets.bottom : 4,
+              paddingTop: 0,
+              position: 'relative',
               ...(Platform.OS === 'web' && {
                 boxShadow: '0 -2px 4px rgba(0, 0, 0, 0.1)',
               }),
             },
-            tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+            tabBarLabelStyle: ({ focused }: { focused: boolean }) => ({ 
+              fontSize: 12, 
+              fontWeight: '600',
+              marginTop: 2,
+              // marginBottom: Platform.OS === 'web' ? 4 : 0,
+            }),
+            tabBarItemStyle: Platform.OS === 'web' ? {
+              height: 'auto',
+            } : undefined,
           })}
         >
           <Tab.Screen name="Menu" component={MenuScreen} />
@@ -210,6 +218,41 @@ function App() {
       }
     }
     loadFonts();
+  }, []);
+
+  useEffect(() => {
+    // Enable scrollbar on web
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      const style = document.createElement('style');
+      style.textContent = `
+        html, body, #root {
+          overflow-y: auto !important;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+        }
+        * {
+          scrollbar-width: auto;
+          scrollbar-color: #888 #f1f1f1;
+        }
+        *::-webkit-scrollbar {
+          width: 12px;
+        }
+        *::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+        *::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 6px;
+        }
+        *::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+      `;
+      document.head.appendChild(style);
+      return () => {
+        document.head.removeChild(style);
+      };
+    }
   }, []);
 
   if (!fontsLoaded) {

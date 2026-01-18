@@ -103,7 +103,7 @@ const PastOrdersScreen: React.FC = () => {
         keyExtractor={(order) => order.id}
         contentContainerStyle={{ paddingBottom: 160 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#1a1a1a" colors={['#1a1a1a']} />}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={Platform.OS === 'web'}
         ListEmptyComponent={() => (
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyText}>No past orders found.</Text>
